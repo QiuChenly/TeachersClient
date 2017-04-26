@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,11 +30,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lzy.okgo.OkGo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import MuYuanTeacher.aolanTeacherSystem;
+import MuYuanTeacher.logininfo;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -61,7 +68,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         OkGo.init(getApplication());
-        login
+        logininfo.aolan = new aolanTeacherSystem();
+        logininfo.aolan.aolanTeacherSystem();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
@@ -140,8 +148,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mUsername.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String user = mUsername.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -154,16 +162,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(user)) {
             mUsername.setError("账号在哪里...?");
             focusView = mUsername;
             cancel = true;
         }
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError("密码写了吗..?");
-            focusView = mPasswordView;
-            cancel = true;
-        }
+//        if (TextUtils.isEmpty(password)) {
+//            mPasswordView.setError("密码写了吗..?");
+//            focusView = mPasswordView;
+//            cancel = true;
+//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -175,6 +183,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             //showProgress(true);
             mProgressView.setVisibility(View.VISIBLE);
             findViewById(R.id.Login_button).setVisibility(View.GONE);
+            
+            final Handler handler=new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Toast.makeText(LoginActivity.this, "", Toast.LENGTH_SHORT).show();
+                }
+            };
+            
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        logininfo.aolan.mLoginSystem(user,password);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+            
         }
     }
 

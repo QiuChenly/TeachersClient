@@ -5,5 +5,6 @@ package MuYuanTeacher;
  */
 
 public class logininfo {
-    public static aolanTeacherSystem aolan;
+    public static aolanTeacherSystem aolan = null;
+
 }

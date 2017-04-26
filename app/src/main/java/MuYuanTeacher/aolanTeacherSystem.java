@@ -4,15 +4,21 @@ import android.content.Context;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.cookie.store.MemoryCookieStore;
 import com.lzy.okgo.cookie.store.PersistentCookieStore;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import okhttp3.Call;
 import okhttp3.Cookie;
 import okhttp3.Response;
 
@@ -26,8 +32,7 @@ public class aolanTeacherSystem {
     private PersistentCookieStore CookieStore = new PersistentCookieStore();
     Context mContext = null;
 
-    public void aolanTeacherSystem()
-    {
+    public void aolanTeacherSystem() {
         OkGo.getInstance()
                 //可以全局统一设置缓存时间,默认永不过期,具体使用方法看 github 介绍
                 .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
@@ -95,17 +100,36 @@ public class aolanTeacherSystem {
         return Cook;
     }
 
-    public void mLoginSystem(String UserID, String Pass) throws IOException {
-        String url = "http://xgsl.jsahvc.edu.cn/login.aspx";
-        Response res = OkGo.get(url).execute();
-        url = res.body().string();
-        UpdataViewState(url);
-        //__VIEWSTATE=&__VIEWSTATEGENERATOR=C2EE9ABB&userbh=23333&pass=0BA7BC92FCD57E337EBB9E74308C811F&cw=&xzbz=1
-        res = OkGo.post(url).params("__VIEWSTATE", _viewstate).params("__VIEWSTATEGENERATOR", _viewStategenerator).params("userbh", UserID).params("pass", md5(UserID)).params("xzbz", "1").execute();
-        return;
+
+    /**
+     * 把汉字编码为UTF-8编码,解决报错问题
+     *
+     * @param str 原字符
+     * @return 转换后的UTF-8字符
+     * @throws UnsupportedEncodingException 异常捕捉
+     */
+    public String EncodeStr(String str) throws UnsupportedEncodingException {
+        return URLEncoder.encode(str, "UTF-8");
     }
 
+    public void mLoginSystem(String UserID, String Pass) throws IOException {
+        String url = "http://xgsl.jsahvc.edu.cn/login.aspx";
+        OkGo.get(url).execute();
+        final String[] str = new String[1];
+        OkGo.post("http://xgsl.jsahvc.edu.cn/login.aspx")     // 请求方式和请求url
+                .cacheKey("cacheKey")            // 设置当前请求的缓存key,建议每个不同功能的请求设置一个
+                .cacheMode(CacheMode.DEFAULT)    // 缓存模式，详细请看缓存介绍
+                .params("__VIEWSTATE", "").params("__VIEWSTATEGENERATOR", "").params("userbh", UserID).params("pass", md5(Pass)).params("xzbz", "1").execute(new StringCallback() {
+            @Override
+            public void onSuccess(String s, Call call, Response response) {
+                // s 即为所需要的结果
+                str[0] =s;
+                UpdataViewState(str[0]);
+                return;
+            }
 
+        });
+    }
 }
 
 
