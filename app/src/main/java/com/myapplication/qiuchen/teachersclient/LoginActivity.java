@@ -29,6 +29,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.lzy.okgo.OkGo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mUsername = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        OkGo.init(getApplication());
+        login
 
         mPasswordView = (EditText) findViewById(R.id.password);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
