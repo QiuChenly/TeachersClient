@@ -6,5 +6,7 @@ package MuYuanTeacher;
 
 public class logininfo {
     public static aolanTeacherSystem aolan = null;
-
+    public static String ErrorMessage;
+    public static int ErrorMsgCode;
+    public static mLoginsData mlogininfo = new mLoginsData ();
 }

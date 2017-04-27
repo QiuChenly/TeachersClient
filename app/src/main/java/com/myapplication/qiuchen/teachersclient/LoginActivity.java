@@ -32,8 +32,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lzy.okgo.OkGo;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,24 +58,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+    protected void onCreate (Bundle savedInstanceState) {
+        super.onCreate (savedInstanceState);
+        setContentView (R.layout.activity_login);
         // Set up the login form.
-        mUsername = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+        mUsername = (AutoCompleteTextView) findViewById (R.id.email);
+        populateAutoComplete ();
 
-        OkGo.init(getApplication());
-        logininfo.aolan = new aolanTeacherSystem();
-        logininfo.aolan.aolanTeacherSystem();
+        logininfo.aolan = new aolanTeacherSystem ();
+        logininfo.aolan.aolanTeacherSystem (this);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById (R.id.password);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
-            mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            mPasswordView.setOnEditorActionListener (new TextView.OnEditorActionListener () {
                 @Override
-                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                    if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                        attemptLogin();
+                public boolean onEditorAction (TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == R.id.login||id == EditorInfo.IME_NULL) {
+                        attemptLogin ();
                         return true;
                     }
                     return false;
@@ -86,41 +83,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         //定义登录按钮的操作
-        Button login_button = (Button) findViewById(R.id.Login_button);
-        login_button.setOnClickListener(new OnClickListener() {
+        Button login_button = (Button) findViewById (R.id.Login_button);
+        login_button.setOnClickListener (new OnClickListener () {
             @Override
-            public void onClick(View view) {
-                attemptLogin();
+            public void onClick (View view) {
+                attemptLogin ();
             }
         });
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.Login_ProgressBar);
+        mLoginFormView = findViewById (R.id.login_form);
+        mProgressView = findViewById (R.id.Login_ProgressBar);
     }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
+    private void populateAutoComplete () {
+        if (! mayRequestContacts ()) {
             return;
         }
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager ().initLoader (0, null, this);
     }
 
-    private boolean mayRequestContacts() {
+    private boolean mayRequestContacts () {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission (READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mUsername, "请输入账号", Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok, new View.OnClickListener() {
+        if (shouldShowRequestPermissionRationale (READ_CONTACTS)) {
+            Snackbar.make (mUsername, "请输入账号", Snackbar.LENGTH_INDEFINITE).setAction (android.R.string.ok, new View.OnClickListener () {
                 @Override
                 @TargetApi(Build.VERSION_CODES.M)
-                public void onClick(View v) {
-                    requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                public void onClick (View v) {
+                    requestPermissions (new String[] {READ_CONTACTS}, REQUEST_READ_CONTACTS);
                 }
             });
         } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+            requestPermissions (new String[] {READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }
         return false;
     }
@@ -129,10 +126,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Callback received when a permissions request has been completed.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
+            if (grantResults.length == 1&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                populateAutoComplete ();
             }
         }
     }
@@ -141,29 +138,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * 这个是登录的事件
      */
-    private void attemptLogin() {
+    private void attemptLogin () {
 
         // Reset errors.
-        mUsername.setError(null);
-        mPasswordView.setError(null);
+        mUsername.setError (null);
+        mPasswordView.setError (null);
 
         // Store values at the time of the login attempt.
-        final String user = mUsername.getText().toString();
-        final String password = mPasswordView.getText().toString();
+        final String user = mUsername.getText ().toString ();
+        final String password = mPasswordView.getText ().toString ();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError("请输入密码可好");
+        if (! TextUtils.isEmpty (password)&&! isPasswordValid (password)) {
+            mPasswordView.setError ("请输入密码可好");
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(user)) {
-            mUsername.setError("账号在哪里...?");
+        if (TextUtils.isEmpty (user)) {
+            mUsername.setError ("账号在哪里...?");
             focusView = mUsername;
             cancel = true;
         }
@@ -176,49 +173,68 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView.requestFocus();
+            focusView.requestFocus ();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
-            mProgressView.setVisibility(View.VISIBLE);
-            findViewById(R.id.Login_button).setVisibility(View.GONE);
-            
-            final Handler handler=new Handler(){
+            mProgressView.setVisibility (View.VISIBLE);
+            findViewById (R.id.Login_button).setVisibility (View.GONE);
+
+            final Handler handler = new Handler () {
                 @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    Toast.makeText(LoginActivity.this, "", Toast.LENGTH_SHORT).show();
+                public void handleMessage (Message msg) {
+                    super.handleMessage (msg);
+                    mProgressView.setVisibility (View.GONE);
+                    findViewById (R.id.Login_button).setVisibility (View.VISIBLE);
+                    switch (logininfo.ErrorMsgCode) {
+                        case 1:
+                            Toast.makeText (LoginActivity.this, "登录成功!" + logininfo.mlogininfo.mName+"老师你好!", Toast.LENGTH_SHORT).show ();
+                            try {
+                                logininfo.aolan.findOnlinePersonCount ();
+                            } catch (IOException e) {
+                                e.printStackTrace ();
+                            }
+                            break;
+                        case 2:
+                            Toast.makeText (LoginActivity.this, logininfo.ErrorMessage, Toast.LENGTH_SHORT).show ();
+                            break;
+                        case 3:
+                            Toast.makeText (LoginActivity.this, "未知错误!请联系作者!QQ:963084062", Toast.LENGTH_SHORT).show ();
+                            break;
+                    }
+
                 }
             };
-            
-            new Thread(){
+
+            new Thread () {
                 @Override
-                public void run() {
+                public void run () {
                     try {
-                        logininfo.aolan.mLoginSystem(user,password);
+                        logininfo.ErrorMsgCode = logininfo.aolan.mLoginSystem (user, password);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     }
+                    handler.sendEmptyMessage (0);
                 }
-            }.start();
-            
+            }.start ();
+
         }
     }
 
-    private boolean isPasswordValid(String password) {
+    private boolean isPasswordValid (String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length () > 4;
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
+    public Loader<Cursor> onCreateLoader (int i, Bundle bundle) {
+        return new CursorLoader (this,
                 // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI, ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+                Uri.withAppendedPath (ContactsContract.Profile.CONTENT_URI, ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
                 // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE + " = ?", new String[]{ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
+                ContactsContract.Contacts.Data.MIMETYPE + " = ?", new String[] {ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
 
                 // Show primary email addresses first. Note that there won't be
                 // a primary email address if the user hasn't specified one.
@@ -226,26 +242,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
+    public void onLoadFinished (Loader<Cursor> cursorLoader, Cursor cursor) {
+        List<String> emails = new ArrayList<> ();
+        cursor.moveToFirst ();
+        while (! cursor.isAfterLast ()) {
+            emails.add (cursor.getString (ProfileQuery.ADDRESS));
+            cursor.moveToNext ();
         }
 
-        addEmailsToAutoComplete(emails);
+        addEmailsToAutoComplete (emails);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void onLoaderReset (Loader<Cursor> cursorLoader) {
 
     }
 
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+    private void addEmailsToAutoComplete (List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(LoginActivity.this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-        mUsername.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<> (LoginActivity.this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+        mUsername.setAdapter (adapter);
     }
 
 
