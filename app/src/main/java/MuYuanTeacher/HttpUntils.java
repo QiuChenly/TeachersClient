@@ -145,8 +145,12 @@ public class HttpUntils {
         return resultData;
     }
 
+    public static String getURLResponse (String urlString, String Cookies, String Referer) throws IOException {
+        return getURLResponse (urlString, Cookies, "UTF-8", Referer);
+    }
+
     public static String getURLResponse (String urlString, String Cookies) throws IOException {
-        return getURLResponse (urlString, Cookies, "UTF-8");
+        return getURLResponse (urlString, Cookies, "UTF-8", urlString);
     }
 
     /**
@@ -155,7 +159,7 @@ public class HttpUntils {
      * @param urlString
      * @return
      */
-    public static String getURLResponse (String urlString, String CookieEx, String CharSet) throws IOException {
+    public static String getURLResponse (String urlString, String CookieEx, String CharSet, String Referer) throws IOException {
         String s = null;
         URL url = new URL (urlString); //URL对象
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
@@ -165,7 +169,7 @@ public class HttpUntils {
         httpURLConnection.setRequestMethod ("GET");     //设置以Post方式提交数据
         httpURLConnection.setUseCaches (false);
         httpURLConnection.setRequestProperty ("Accept", "*/*");
-        httpURLConnection.setRequestProperty ("Referer", urlString);
+        httpURLConnection.setRequestProperty ("Referer", Referer);
         httpURLConnection.setRequestProperty ("Accept-Language", "zh-cn");
         httpURLConnection.setRequestProperty ("Cookie", CookieEx);
         httpURLConnection.setRequestProperty ("Content-Type", "application/x-www-form-urlencoded");

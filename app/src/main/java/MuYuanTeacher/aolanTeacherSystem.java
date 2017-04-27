@@ -1,17 +1,9 @@
 package MuYuanTeacher;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.apache.http.Header;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
@@ -26,26 +18,9 @@ public class aolanTeacherSystem {
     public String _viewstate = "";
     public String _viewStategenerator = "";
     Context mContext = null;
-    private AsyncHttpClient client = null;
 
     public void aolanTeacherSystem (Context c) {
         mContext = c;
-        client = new AsyncHttpClient ();//initiation
-        client.setConnectTimeout (5000);//设置超时
-        client.setResponseTimeout (5000);
-        client.get ("http://xgsl.jsahvc.edu.cn/login.aspx", new AsyncHttpResponseHandler () {
-            @Override
-            public void onSuccess (int statusCode, Header[] headers, byte[] responseBody) {
-                String Temp = null;
-                Temp = new String (responseBody);
-                UpdataViewState (Temp);//更新数据
-            }
-
-            @Override
-            public void onFailure (int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d ("QiuChen", error.getMessage ());
-            }
-        });
     }
 
     /**
@@ -135,7 +110,7 @@ public class aolanTeacherSystem {
 
     public void findOnlinePersonCount () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/online.aspx?xzbz=f";
-        logininfo.ErrorMessage = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        logininfo.ErrorMessage = HttpUntils.getURLResponse (url, HttpUntils.Cookie,"http://xgsl.jsahvc.edu.cn/top_1.aspx");
         logininfo.mlogininfo.m_YXDM=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"yxdm\" value=\"","\"",0);
         logininfo.mlogininfo.m_bh=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"bh\" value=\"","\"",0);
         logininfo.mlogininfo.m_fip=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"fip\" value=\"","\"",0);

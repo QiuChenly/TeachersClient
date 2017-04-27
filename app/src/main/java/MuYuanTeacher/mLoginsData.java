@@ -12,5 +12,4 @@ public class mLoginsData {
     public static String m_xzbz;//同上
     public static String m_bh;//目测是编号
     public static String m_fip;//IP地址
-
 }

@@ -64,11 +64,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mUsername = (AutoCompleteTextView) findViewById (R.id.email);
         populateAutoComplete ();
+        mPasswordView = (EditText) findViewById (R.id.password);
 
         logininfo.aolan = new aolanTeacherSystem ();
         logininfo.aolan.aolanTeacherSystem (this);
+        logininfo.Share = this.getSharedPreferences ("QiuChenTeachersSet", MODE_PRIVATE);
+        logininfo.edit = logininfo.Share.edit ();
+        String user = logininfo.Share.getString ("user", "");
+        if (user != "") {
+            mUsername.setText (user);
+        }
+        String pass = logininfo.Share.getString ("pass", "");
+        if (user != "") {
+            mPasswordView.setText (pass);
+        }
 
-        mPasswordView = (EditText) findViewById (R.id.password);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
             mPasswordView.setOnEditorActionListener (new TextView.OnEditorActionListener () {
                 @Override
@@ -92,6 +102,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
         mLoginFormView = findViewById (R.id.login_form);
         mProgressView = findViewById (R.id.Login_ProgressBar);
+
     }
 
     private void populateAutoComplete () {
@@ -189,12 +200,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     findViewById (R.id.Login_button).setVisibility (View.VISIBLE);
                     switch (logininfo.ErrorMsgCode) {
                         case 1:
-                            Toast.makeText (LoginActivity.this, "登录成功!" + logininfo.mlogininfo.mName+"老师你好!", Toast.LENGTH_SHORT).show ();
-                            try {
-                                logininfo.aolan.findOnlinePersonCount ();
-                            } catch (IOException e) {
-                                e.printStackTrace ();
-                            }
+                            Toast.makeText (LoginActivity.this, "登录成功!" + logininfo.mlogininfo.mName + "老师你好!", Toast.LENGTH_SHORT).show ();
+                            logininfo.edit.putString ("user",user);
+                            logininfo.edit.putString ("pass",password);
+                            logininfo.edit.apply ();
+                            new Thread (){
+                                @Override
+                                public void run () {
+                                    try {
+                                        logininfo.aolan.findOnlinePersonCount ();
+                                    } catch (IOException e) {
+                                        e.printStackTrace ();
+                                    }
+                                }
+                            }.start ();
                             break;
                         case 2:
                             Toast.makeText (LoginActivity.this, logininfo.ErrorMessage, Toast.LENGTH_SHORT).show ();
