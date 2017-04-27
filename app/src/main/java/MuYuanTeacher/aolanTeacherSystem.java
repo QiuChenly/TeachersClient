@@ -2,6 +2,12 @@ package MuYuanTeacher;
 
 import android.content.Context;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -15,12 +21,16 @@ import java.security.NoSuchAlgorithmException;
  */
 
 public class aolanTeacherSystem {
+    private AsyncHttpClient client = null;
     public String _viewstate = "";
     public String _viewStategenerator = "";
     Context mContext = null;
 
     public void aolanTeacherSystem (Context c) {
         mContext = c;
+        client = new AsyncHttpClient();//initiation
+        client.setConnectTimeout(5000);//设置超时
+        client.setResponseTimeout(5000);
     }
 
     /**
@@ -110,11 +120,25 @@ public class aolanTeacherSystem {
 
     public void findOnlinePersonCount () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/online.aspx?xzbz=f";
-        logininfo.ErrorMessage = HttpUntils.getURLResponse (url, HttpUntils.Cookie,"http://xgsl.jsahvc.edu.cn/top_1.aspx");
-        logininfo.mlogininfo.m_YXDM=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"yxdm\" value=\"","\"",0);
-        logininfo.mlogininfo.m_bh=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"bh\" value=\"","\"",0);
-        logininfo.mlogininfo.m_fip=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"fip\" value=\"","\"",0);
-        logininfo.mlogininfo.m_xzbz=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"xzbz\" value=\"","\"",0);
-        logininfo.mlogininfo.m_zxrs=GetSubText (logininfo.ErrorMessage,"type=\"hidden\" id=\"zxrs\" value=\"","\"",0);
+        logininfo.ErrorMessage = HttpUntils.getURLResponse (url, HttpUntils.Cookie, "http://xgsl.jsahvc.edu.cn/top_1.aspx");
+        UpdataViewState (logininfo.ErrorMessage);
+        logininfo.mlogininfo.m_YXDM = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"yxdm\" value=\"", "\"", 0);
+        logininfo.mlogininfo.m_bh = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"bh\" value=\"", "\"", 0);
+        logininfo.mlogininfo.m_fip = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"fip\" value=\"", "\"", 0);
+        logininfo.mlogininfo.m_xzbz = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"xzbz\" value=\"", "\"", 0);
+        logininfo.mlogininfo.m_zxrs = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"zxrs\" value=\"", "\"", 0);
+    }
+
+    public void getAllLeaveState () throws IOException {
+        String url = "http://xgsl.jsahvc.edu.cn/student/r_2_5_1.aspx";
+        String data =HttpUntils.getURLResponse (url,HttpUntils.Cookie);
+        UpdataViewState (data);
+
+        data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=gD%2FAlnRdqJZogsT2QR4iglacazDNE%2BYoU9DC7g1gPt9iysBu6uW0gfEaqHdhO%2Bwcd07EYWpua6ygXVuHRp4IIUSDuz9l13Y2h" +
+                "%2Fylo3F9JUvhLuaxeLDSSPgPNfz%2Fx7VYcoqzZhVCEKwqyK%2Fa%2BCn%2FY9QUH6Lg7n8Xk37vDnY97ZJxrS89SHmuWYIvAgPXa27qPPCqa%2BIAxoG%2B9iSapbYsGMFt1vXh0Xi" +
+                "%2F2SENZ3QuqGClFvoGeLPVQBluCfHZzmBBd1Lydw%3D%3D&__VIEWSTATEGENERATOR=CD22A72B&ym=1&xzbz=0&ptj=&km=&ar1_gs=0&dc_bq=&N_HT=&N_DF=&N_DF2=&ppage=0&fy=&xzclk1=xdm&xzclk2=bjhm&xzclk3=xh" +
+                "&xzclk4=xm&xzgjc=xh&ii_z=0&ii_d=&dy_bz=1&dy_hz=&hei=&dc_f1=&dc_f2=&n_ni=&n_nim=&n_hj=&n_hjz=&n_hjzdx=&pgs=40&phs=25&allbz=&xq=&rzbz=1&czsj=&gjz=&cw=&mbbz=&xfl_y=";
+        ResponseData res = HttpUntils.submitPostData (new URL (url), data, HttpUntils.Cookie, "application/x-www-form-urlencoded");
+        //UpdataViewState (res.ResponseText);
     }
 }

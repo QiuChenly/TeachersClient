@@ -34,7 +34,11 @@ public class HttpUntils {
      * @throws IOException IO异常捕捉,请在外部调用Try
      */
     public static ResponseData submitPostData (URL url, String Datas, String Cookie, String ContentType) throws IOException {
-        return submitPostData (url, Datas.getBytes (), Cookie, ContentType);
+        return submitPostData (url, Datas.getBytes (), Cookie, ContentType,false);
+    }
+
+    public static ResponseData submitPostData (URL url, String Datas, String Cookie, String ContentType,boolean Direct) throws IOException {
+        return submitPostData (url, Datas.getBytes (), Cookie, ContentType,Direct);
     }
 
 
@@ -48,16 +52,16 @@ public class HttpUntils {
      * @return 返回网页数据
      * @throws IOException IO异常捕捉,请在外部调用Try
      */
-    public static ResponseData submitPostData (URL url, byte[] Datas, String Cookies, String ContentType) throws IOException {
+    public static ResponseData submitPostData (URL url, byte[] Datas, String Cookies, String ContentType,Boolean Redirct) throws IOException {
 
         byte[] data = Datas;//获得请求体
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
-        httpURLConnection.setConnectTimeout (3000);     //设置连接超时时间
+        httpURLConnection.setConnectTimeout (10000);     //设置连接超时时间
         httpURLConnection.setDoInput (true);                  //打开输入流，以便从服务器获取数据
         httpURLConnection.setDoOutput (true);                 //打开输出流，以便向服务器提交数据
         httpURLConnection.setRequestMethod ("POST");     //设置以Post方式提交数据
         httpURLConnection.setUseCaches (false);               //使用Post方式不能使用缓存
-        httpURLConnection.setInstanceFollowRedirects (false);
+        httpURLConnection.setInstanceFollowRedirects (Redirct);
         //设置请求体的类型是文本类型
         httpURLConnection.setRequestProperty ("Content-Type", ContentType);
         httpURLConnection.setRequestProperty ("Cookie", Cookies);
@@ -66,7 +70,6 @@ public class HttpUntils {
         //获得输出流，向服务器写入数据
         OutputStream outputStream = httpURLConnection.getOutputStream ();
         outputStream.write (data);
-        httpURLConnection.connect ();
         ResponseData res = new ResponseData ();
         int response = 0;
         try {

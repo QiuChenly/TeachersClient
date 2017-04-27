@@ -1,5 +1,6 @@
 package MuYuanTeacher;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 
 /**
@@ -13,4 +14,5 @@ public class logininfo {
     public static mLoginsData mlogininfo = new mLoginsData ();
     public static SharedPreferences Share;
     public static SharedPreferences.Editor edit;
+    public static ProgressDialog Dialog = null;
 }

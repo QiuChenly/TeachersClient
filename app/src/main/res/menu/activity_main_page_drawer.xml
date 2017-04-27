@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/mMainPage_Main"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="主页"/>
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="测试项目1"/>
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="测试项目2"/>
+        <item
+            android:id="@+id/nav_manage1"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="测试项目3"/>
+        <item
+            android:id="@+id/nav_manage2"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="测试项目4"/>
+        <item
+            android:id="@+id/nav_manage3"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="测试项目5"/>
+        <item
+            android:id="@+id/nav_manage4"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="测试项目6"/>
+
+    </group>
+
+    <item android:title="关于APP">
+        <menu>
+            <item
+                android:id="@+id/mMainPage_Author"
+                android:icon="@drawable/ic_menu_share"
+                android:title="作者:秋城落叶"/>
+            <item
+                android:id="@+id/mMainPage_AuthorEmail"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Email:963084062@qq.com"/>
+        </menu>
+    </item>
+
+</menu>

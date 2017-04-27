@@ -3,6 +3,7 @@ package com.myapplication.qiuchen.teachersclient;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
@@ -204,11 +205,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             logininfo.edit.putString ("user",user);
                             logininfo.edit.putString ("pass",password);
                             logininfo.edit.apply ();
+                            final Handler hand= new Handler (){
+                                @Override
+                                public void handleMessage (Message msg) {
+                                    super.handleMessage (msg);
+                                    Intent i=new Intent (LoginActivity.this,MainPage.class);
+                                    startActivity (i);
+                                    finish ();
+                                }
+                            };
                             new Thread (){
                                 @Override
                                 public void run () {
                                     try {
                                         logininfo.aolan.findOnlinePersonCount ();
+                                        hand.sendEmptyMessage (0);
                                     } catch (IOException e) {
                                         e.printStackTrace ();
                                     }
