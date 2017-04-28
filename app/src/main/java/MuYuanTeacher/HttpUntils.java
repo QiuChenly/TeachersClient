@@ -107,10 +107,17 @@ public class HttpUntils {
         return res;
     }
 
-    public static ResponseData POST (
-            String urls, String Datas, Map<String, String> RequestHeader, Boolean Redirct
-    ) throws IOException {
-
+    /**
+     * 秋城落叶 重写 POST方法,支持Cookie自动更新
+     *
+     * @param urls          请求的Http网址
+     * @param Datas         字符串数据
+     * @param RequestHeader 协议头 Cookie也在里面设置
+     * @param Redirct       是否允许重定向
+     * @return 请求数据
+     * @throws IOException IO异常
+     */
+    public static ResponseData POST (String urls, String Datas, Map<String, String> RequestHeader, Boolean Redirct) throws IOException {
         byte[] data = Datas.getBytes ();//获得请求体
         URL url = new URL (urls);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
