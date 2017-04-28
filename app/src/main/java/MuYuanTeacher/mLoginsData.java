@@ -16,4 +16,5 @@ public class mLoginsData {
     public static String m_bh;//目测是编号
     public static String m_fip;//IP地址
     public static List<Map<String,String>> LeavesPerson;
+    public static ObjectPersonInfo Holidays_StudentInfo;
 }

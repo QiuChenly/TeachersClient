@@ -186,5 +186,74 @@ public class aolanTeacherSystem {
         map.put ("Host", "xgsl.jsahvc.edu.cn");
         map.put ("Cookie", HttpUntils.Cookie);
         ResponseData res = HttpUntils.POST (url, Data, map, true);
+        logininfo.mlogininfo.Holidays_StudentInfo = new ObjectPersonInfo ();
+        logininfo.mlogininfo.Holidays_StudentInfo.m_ClassName = GetSubText (res.ResponseText, "<input name=\"bjhm\" type=\"text\" value=\"", "\"", 0);
+        logininfo.mlogininfo.Holidays_StudentInfo.m_czsj = GetSubText (res.ResponseText, "<input name=\"czsj\" type=\"hidden\" id=\"czsj\" value=\"", "\"", 0);
+        logininfo.mlogininfo.Holidays_StudentInfo.m_xh = GetSubText (res.ResponseText, "type=\"hidden\" id=\"xh\" value=\"", "\"", 0);
+        logininfo.mlogininfo.Holidays_StudentInfo.m_DepartmentName = GetSubText (res.ResponseText, "<input name=\"x\" type=\"text\" value=\"", "\"", 0);
+        logininfo.mlogininfo.Holidays_StudentInfo.m_Name = GetSubText (res.ResponseText, "<input name=\"xm\" type=\"text\" value=\"", "\"", 0);
+        logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl = "http://xgsl.jsahvc.edu.cn/student/" + GetSubText (res.ResponseText, "type=\"hidden\" id=\"psrc\" value=\"", "\"", 0);
+        logininfo.mlogininfo.Holidays_StudentInfo.m_rxsj = GetSubText (res.ResponseText, "type=\"hidden\" id=\"rxsj\" value=\"", "\"", 0);
+        logininfo.mlogininfo.Holidays_StudentInfo.m_xdm = GetSubText (res.ResponseText, "type=\"hidden\" id=\"xdm\" value=\"", "\"", 0);
+
+        //同步获取这位同学的数据
+        url = "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_st_xsqj.aspx";
+        Data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        UpdataViewState (Data);
+        Data = "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__EVENTTARGET\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"__EVENTARGUMENT\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n"
+                + "\n" + _viewstate + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; " + "name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + _viewStategenerator +
+                "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qjsj\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"qjsy\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qjsydm\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qjjtyy\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"File1\"; filename=\"\"\n" + "Content-Type: " + "application/octet-stream\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"fjm\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"wcdz\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"jzxmlxfs\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"nhxsj\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qjts\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xjrq\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition:" + " form-data; name=\"czsj\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_czsj + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; " + "name=\"fdyspyj\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"fdyspyjdm\"\n" +
+                "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"yxspyj\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"yxspyjdm\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xjspyj\"\n" + "\n" +
+                "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xjspyjdm\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"km\"\n" + "\n" + "st_xsqj\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"pzd\"\n" + "\n" +
+                "qjsj,qjsydm,qjjtyy,fjm,wcdz,jzxmlxfs,nhxsj,qjts,xjrq,czsj," + "fdyspyjdm,fdy,fdyspsj,yxspyjdm,yxspr,yxspsj,xjspyjdm,xjspr,xjspsj,sqpzck\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"pzd_c\"\n" + "\n" + "sqpzck,\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"pzd_lock\"\n" + "\n" + "nhxsj,qjsj,yxspyjdm,xjspyjdm,\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; "
+                + "name=\"pzd_lock2\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xdm\"\n" + "\n" + logininfo.mlogininfo
+                .Holidays_StudentInfo.m_xdm + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: " + "form-data; name=\"bjhm\"\n" + "\n" + logininfo.mlogininfo
+                .Holidays_StudentInfo.m_ClassName + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xh\"\n" + "\n" + logininfo.mlogininfo
+                .Holidays_StudentInfo.m_xh + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xm\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo
+                .m_Name + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qx_i\"\n" + "\n" + "0\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"qx_u\"\n" + "\n" + "1\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qx_d\"\n" + "\n" + "0\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"databcxs\"\n" + "\n" + "1\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"databcdel\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xzbz\"\n" + "\n" +
+                "1\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"pkey\"\n" + "\n" + "2017-4-25\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"pkey4\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xs_bj\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"bdbz\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition:" +
+                " form-data; name=\"cw\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: " + "form-data; name=\"sender\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"fjmf\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition:" +
+                " form-data; name=\"pczsj\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_czsj + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; " +
+                "name=\"xp_pmc\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xp_pval\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xp_plx\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"xp_pkm\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xp_pzd\"\n" + "\n" + "\n"
+                + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xp_pjxjdm\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
+                "Content-Disposition: form-data; name=\"xp_ipbz\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"xp_pjxjdm2\"\n" + "\n" +
+                "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ--";
+        Map<String, String> map1 = new HashMap<> ();
+        map1.put ("Accept", "text / html, application / xhtml + xml, application / xml;q = 0.9, image / webp,*/*;q=0.8");
+        map1.put ("Accept-Language", "zh-CN,zh;q=0.8");
+        map1.put ("Cache-Control", "max-age=0");
+        map1.put ("Connection", "keep-alive");
+        map1.put ("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryB3g3OGJ1RGcsa6kZ");
+        map1.put ("Host", "xgsl.jsahvc.edu.cn");
+        map1.put ("Origin", "http://xgsl.jsahvc.edu.cn");
+        map1.put ("Referer", "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_st_xsqj.aspx");
+        map1.put ("Upgrade-Insecure-Requests", "1");
+        map1.put ("Cookie", HttpUntils.Cookie);
+        ResponseData responseData = HttpUntils.POST (url, Data, map1, true);
+        UpdataViewState (responseData.ResponseText);
+
+
     }
 }

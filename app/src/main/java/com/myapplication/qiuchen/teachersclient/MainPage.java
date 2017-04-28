@@ -1,6 +1,7 @@
 package com.myapplication.qiuchen.teachersclient;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import MuYuanTeacher.HttpUntils;
 import MuYuanTeacher.logininfo;
 
 public class MainPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -164,20 +167,37 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                     @Override
                     public void onItemSelected (AdapterView<?> parent, View view, final int position, long id) {
                         Snackbar.make (findViewById (R.id.m_ContentView), logininfo.mlogininfo.LeavesPerson.get (position).get ("BanJi") + " " + logininfo.mlogininfo.LeavesPerson.get (position).get
-                                ("XinMing")+ "\n提交时间:" + logininfo.mlogininfo.LeavesPerson.get (position).get
-                                ("RequestTime"), Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
-                        new Thread (){
+                                ("XinMing") + "\n提交时间:" + logininfo.mlogininfo.LeavesPerson.get (position).get ("RequestTime"), Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
+                        final Handler hand = new Handler () {
+                            @Override
+                            public void handleMessage (Message msg) {
+                                super.handleMessage (msg);
+                                //判断数据可用
+                                if (logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl_Bitmap != null) {
+                                    ((ImageView) findViewById (R.id.m_LeavesView_ImageView_mPicture)).setImageBitmap (logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl_Bitmap);
+
+                                }
+                            }
+                        };
+
+                        new Thread () {
                             @Override
                             public void run () {
                                 try {
-                                    logininfo.aolan.QueryStudentLeaveInfomation (logininfo.mlogininfo.LeavesPerson.get (position).get ("YuanXi"),logininfo.mlogininfo.LeavesPerson.get (position).get
-                                            ("BanJi") ,logininfo.mlogininfo.LeavesPerson.get (position).get ("XueHao") ,logininfo.mlogininfo.LeavesPerson.get (position).get ("RequestTime")  );
+                                    logininfo.aolan.QueryStudentLeaveInfomation (logininfo.mlogininfo.LeavesPerson.get (position).get ("YuanXi"), logininfo.mlogininfo.LeavesPerson.get (position)
+                                            .get ("BanJi"), logininfo.mlogininfo.LeavesPerson.get (position).get ("XueHao"), logininfo.mlogininfo.LeavesPerson.get (position).get ("RequestTime"));
+                                    logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl_Bitmap = null;
+                                    if (logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl.length () > 0) {
+                                        logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl_Bitmap = HttpUntils.getImageBitmap (logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl);
+                                    }
+                                    hand.sendEmptyMessage (0);
                                 } catch (IOException e) {
                                     e.printStackTrace ();
                                 }
                             }
                         }.start ();
                     }
+
                     @Override
                     public void onNothingSelected (AdapterView<?> parent) {
 
