@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
@@ -18,11 +17,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.zip.Inflater;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import MuYuanTeacher.logininfo;
 
@@ -54,9 +59,9 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener (this);
 
         logininfo.Dialog = new ProgressDialog (this);
-        logininfo.Dialog.setTitle("页面加载中...");
-        logininfo.Dialog.setMessage("初始化页面数据中...");
-        logininfo.Dialog.setCancelable(false);
+        logininfo.Dialog.setTitle ("页面加载中...");
+        logininfo.Dialog.setMessage ("初始化页面数据中...");
+        logininfo.Dialog.setCancelable (false);
     }
 
     @Override
@@ -128,11 +133,10 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         public void handleMessage (Message msg) {
             super.handleMessage (msg);
             logininfo.Dialog.show ();
-            final LayoutInflater inflater = LayoutInflater.from(MainPage.this);
-            switch (msg.getData().getInt("page"))
-            {
+            final LayoutInflater inflater = LayoutInflater.from (MainPage.this);
+            switch (msg.getData ().getInt ("page")) {
                 case 1:
-                    initView1Page(inflater);
+                    initView1Page (inflater);
                     Snackbar.make (findViewById (R.id.m_ContentView), "hahahahaha.....", Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
                     logininfo.Dialog.cancel ();
                     break;
@@ -142,23 +146,60 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         }
     };
 
-public void initView1Page(LayoutInflater inflater)
-{
-    LinearLayout i = (LinearLayout) inflater.inflate(R.layout.mmian_mian, null).findViewById(R.id.m_LeavesView);
-    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.m_ContentView);
-    linearLayout.removeAllViews();
-    linearLayout.addView(i);
-    new Thread (){
-        @Override
-        public void run () {
-            try {
-                logininfo.aolan.getAllLeaveState ();
-            } catch (IOException e) {
-                e.printStackTrace ();
+    public void initView1Page (LayoutInflater inflater) {
+        LinearLayout i = (LinearLayout) inflater.inflate (R.layout.mmian_mian, null).findViewById (R.id.m_LeavesView);
+        LinearLayout linearLayout = (LinearLayout) findViewById (R.id.m_ContentView);
+        linearLayout.removeAllViews ();
+        linearLayout.addView (i);
+        final List<String> list = new ArrayList<> ();
+        final Spinner spinner = (Spinner) findViewById (R.id.m_LeavesSpinner);
+        final Handler hand = new Handler () {
+            @Override
+            public void handleMessage (Message msg) {
+                super.handleMessage (msg);
+                ArrayAdapter arrayAdapter = new ArrayAdapter<String> (MainPage.this, android.R.layout.simple_spinner_item, list);
+                arrayAdapter.setDropDownViewResource (android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter (arrayAdapter);
+                spinner.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener () {
+                    @Override
+                    public void onItemSelected (AdapterView<?> parent, View view, final int position, long id) {
+                        Snackbar.make (findViewById (R.id.m_ContentView), logininfo.mlogininfo.LeavesPerson.get (position).get ("BanJi") + " " + logininfo.mlogininfo.LeavesPerson.get (position).get
+                                ("XinMing")+ "\n提交时间:" + logininfo.mlogininfo.LeavesPerson.get (position).get
+                                ("RequestTime"), Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
+                        new Thread (){
+                            @Override
+                            public void run () {
+                                try {
+                                    logininfo.aolan.QueryStudentLeaveInfomation (logininfo.mlogininfo.LeavesPerson.get (position).get ("YuanXi"),logininfo.mlogininfo.LeavesPerson.get (position).get
+                                            ("BanJi") ,logininfo.mlogininfo.LeavesPerson.get (position).get ("XueHao") ,logininfo.mlogininfo.LeavesPerson.get (position).get ("RequestTime")  );
+                                } catch (IOException e) {
+                                    e.printStackTrace ();
+                                }
+                            }
+                        }.start ();
+                    }
+                    @Override
+                    public void onNothingSelected (AdapterView<?> parent) {
+
+                    }
+                });
             }
-        }
-    }.start ();
-}
+        };
+        new Thread () {
+            @Override
+            public void run () {
+                try {
+                    logininfo.aolan.getAllLeaveState ();//同步线程处理
+                    for (Map<String, String> map : logininfo.mlogininfo.LeavesPerson) {
+                        list.add (map.get ("BanJi") + " " + map.get ("XinMing"));
+                    }
+                    hand.sendEmptyMessage (0);
+                } catch (IOException e) {
+                    e.printStackTrace ();
+                }
+            }
+        }.start ();
+    }
 
     @Override
     public boolean onKeyDown (int keyCode, KeyEvent event) {

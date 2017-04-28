@@ -1,5 +1,8 @@
 package MuYuanTeacher;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * This Code Is Created by cheny on 2017/4/27 22:57.
  */
@@ -12,4 +15,5 @@ public class mLoginsData {
     public static String m_xzbz;//同上
     public static String m_bh;//目测是编号
     public static String m_fip;//IP地址
+    public static List<Map<String,String>> LeavesPerson;
 }

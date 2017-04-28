@@ -3,12 +3,14 @@ package MuYuanTeacher;
 import android.content.Context;
 import android.icu.text.LocaleDisplayNames;
 import android.util.Log;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -139,22 +141,50 @@ public class aolanTeacherSystem {
         map.put ("Host", "xgsl.jsahvc.edu.cn");
         map.put ("Cookie", HttpUntils.Cookie);
 
-        data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE="+EncodeStr (_viewstate)+"&__VIEWSTATEGENERATOR="+_viewStategenerator+"&ym=1&xzbz=0&ptj=&km=&ar1_gs=0&dc_bq=&N_HT=&N_DF=&N_DF2=&ppage=0&fy=&xzclk1=xdm" +
+        data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator +
+                "&ym=1&xzbz=0&ptj=&km=&ar1_gs=0&dc_bq=&N_HT=&N_DF=&N_DF2=&ppage=0&fy=&xzclk1=xdm" +
                 "&xzclk2=bjhm&xzclk3=xh&xzclk4=xm&xzgjc=xh&ii_z=0&ii_d=&dy_bz=1&dy_hz=&hei=&dc_f1=&dc_f2=&n_ni=&n_nim=&n_hj=&n_hjz=&n_hjzdx=&pgs=40&phs=25&allbz=&xq=&rzbz=1&czsj=&gjz=&cw=&mbbz" +
                 "=&xfl_y=";
         ResponseData res = HttpUntils.POST (url, data, map, true);
-
-        if(res.ResponseCode==200) {
+        if (res.ResponseCode == 200) {
             UpdataViewState (res.ResponseText);
             //获取数据并封装
-            String Regex = "<td nowrap=\"nowrap\" valign=\"top\">([^0-9]*?)[\\s]*<br>(.*?)[\\s]*<br>(.*?)[\\s]*<br>(.*?)[\\s]*</td><td valign=\"top\"><font color=red>(.*?)[\\s]*</font>";
+            String Regex = "ondblclick=\"xzst\\(&#39;.*?&#39;,&#39;st_xsqj&#39;,&#39;(.*?)&#39;\\)\">[\\s]*<td nowrap=\"nowrap\" valign=\"top\".*?>([\\u4e00-\\u9fa5]*?)[\\s]*<br>(.*?)[\\s]*<br>(" +
+                    ".*?)[\\s]*<br>(.*?)[\\s]*</td><td valign=\"top\"><font color=red>(.*?)[\\s]*</font>";
             Pattern p = Pattern.compile (Regex);
             Matcher m = p.matcher (res.ResponseText);
-            while (m.find ())
-            {
-                String s=m.group (1)+m.group (2)+m.group (3)+m.group (4)+m.group (5);
-                Log.d ("QiuChen",s);
+            logininfo.mlogininfo.LeavesPerson = new ArrayList<> ();
+            while (m.find ()) {
+                Map<String, String> maps = new HashMap<> ();
+                maps.put ("RequestTime", m.group (1));
+                maps.put ("YuanXi", m.group (2));
+                maps.put ("BanJi", m.group (3));
+                maps.put ("XueHao", m.group (4));
+                maps.put ("XinMing", m.group (5));
+                maps.put ("LeiXing", m.group (6));
+                logininfo.mlogininfo.LeavesPerson.add (maps);
             }
+
         }
+    }
+
+    public void QueryStudentLeaveInfomation (String DepartmentName, String ClassName, String StudentID, String RequestTime) throws IOException {
+        String url = "http://xgsl.jsahvc.edu.cn/student/r_3_1_sy.aspx";
+        String Data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        UpdataViewState (Data);
+        Data = "__EVENTTARGET=&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE" + "=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator + "&x=" + EncodeStr (DepartmentName) +
+                "&bjhm=" + EncodeStr (ClassName) + "&gjc=xh&gjc_z=" + StudentID + "&xm=&xdm=&iud2=&pzd=xdm%2Cbjhm%2Cxh%2Cxm&xzbz=1&psrc=&pxj=&pcf=&rxsj=&km_lx=sy_&xh=" + StudentID +
+                "&km=st_xsqj&czsj=" + EncodeStr (RequestTime) + "&xp_pmc" + "=&xp_pval" + "=&xp_plx=&xp_pkm=&xp_pzd=&xp_pjxjdm=&xp_ipbz=&xp_pjxjdm2=";
+        Map<String, String> map = new HashMap<> ();
+        map.put ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        map.put ("Accept-Language", "zh-CN,zh;q=0.8");
+        map.put ("Cache-Control", "max-age=0");
+        map.put ("Connection", "keep-alive");
+        map.put ("Content-Type", "application/x-www-form-urlencoded");
+        map.put ("Referer", "http://xgsl.jsahvc.edu.cn/student/r_3_1_sy.aspx");
+        map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
+        map.put ("Host", "xgsl.jsahvc.edu.cn");
+        map.put ("Cookie", HttpUntils.Cookie);
+        ResponseData res = HttpUntils.POST (url, Data, map, true);
     }
 }
