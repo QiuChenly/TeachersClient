@@ -1,19 +1,18 @@
 package MuYuanTeacher;
 
 import android.content.Context;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.apache.http.Header;
-
+import android.icu.text.LocaleDisplayNames;
+import android.util.Log;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -21,16 +20,12 @@ import java.security.NoSuchAlgorithmException;
  */
 
 public class aolanTeacherSystem {
-    private AsyncHttpClient client = null;
     public String _viewstate = "";
     public String _viewStategenerator = "";
     Context mContext = null;
 
     public void aolanTeacherSystem (Context c) {
         mContext = c;
-        client = new AsyncHttpClient();//initiation
-        client.setConnectTimeout(5000);//设置超时
-        client.setResponseTimeout(5000);
     }
 
     /**
@@ -131,14 +126,35 @@ public class aolanTeacherSystem {
 
     public void getAllLeaveState () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/r_2_5_1.aspx";
-        String data =HttpUntils.getURLResponse (url,HttpUntils.Cookie);
+        String data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
         UpdataViewState (data);
+        Map<String, String> map = new HashMap<> ();
+        map.put ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        map.put ("Accept-Language", "zh-CN,zh;q=0.8");
+        map.put ("Cache-Control", "max-age=0");
+        map.put ("Connection", "keep-alive");
+        map.put ("Content-Type", "application/x-www-form-urlencoded");
+        map.put ("Referer", "http://xgsl.jsahvc.edu.cn/student/r_2_5_1.aspx");
+        map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
+        map.put ("Host", "xgsl.jsahvc.edu.cn");
+        map.put ("Cookie", HttpUntils.Cookie);
 
-        data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=gD%2FAlnRdqJZogsT2QR4iglacazDNE%2BYoU9DC7g1gPt9iysBu6uW0gfEaqHdhO%2Bwcd07EYWpua6ygXVuHRp4IIUSDuz9l13Y2h" +
-                "%2Fylo3F9JUvhLuaxeLDSSPgPNfz%2Fx7VYcoqzZhVCEKwqyK%2Fa%2BCn%2FY9QUH6Lg7n8Xk37vDnY97ZJxrS89SHmuWYIvAgPXa27qPPCqa%2BIAxoG%2B9iSapbYsGMFt1vXh0Xi" +
-                "%2F2SENZ3QuqGClFvoGeLPVQBluCfHZzmBBd1Lydw%3D%3D&__VIEWSTATEGENERATOR=CD22A72B&ym=1&xzbz=0&ptj=&km=&ar1_gs=0&dc_bq=&N_HT=&N_DF=&N_DF2=&ppage=0&fy=&xzclk1=xdm&xzclk2=bjhm&xzclk3=xh" +
-                "&xzclk4=xm&xzgjc=xh&ii_z=0&ii_d=&dy_bz=1&dy_hz=&hei=&dc_f1=&dc_f2=&n_ni=&n_nim=&n_hj=&n_hjz=&n_hjzdx=&pgs=40&phs=25&allbz=&xq=&rzbz=1&czsj=&gjz=&cw=&mbbz=&xfl_y=";
-        ResponseData res = HttpUntils.submitPostData (new URL (url), data, HttpUntils.Cookie, "application/x-www-form-urlencoded");
-        //UpdataViewState (res.ResponseText);
+        data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE="+EncodeStr (_viewstate)+"&__VIEWSTATEGENERATOR="+_viewStategenerator+"&ym=1&xzbz=0&ptj=&km=&ar1_gs=0&dc_bq=&N_HT=&N_DF=&N_DF2=&ppage=0&fy=&xzclk1=xdm" +
+                "&xzclk2=bjhm&xzclk3=xh&xzclk4=xm&xzgjc=xh&ii_z=0&ii_d=&dy_bz=1&dy_hz=&hei=&dc_f1=&dc_f2=&n_ni=&n_nim=&n_hj=&n_hjz=&n_hjzdx=&pgs=40&phs=25&allbz=&xq=&rzbz=1&czsj=&gjz=&cw=&mbbz" +
+                "=&xfl_y=";
+        ResponseData res = HttpUntils.POST (url, data, map, true);
+
+        if(res.ResponseCode==200) {
+            UpdataViewState (res.ResponseText);
+            //获取数据并封装
+            String Regex = "<td nowrap=\"nowrap\" valign=\"top\">([^0-9]*?)[\\s]*<br>(.*?)[\\s]*<br>(.*?)[\\s]*<br>(.*?)[\\s]*</td><td valign=\"top\"><font color=red>(.*?)[\\s]*</font>";
+            Pattern p = Pattern.compile (Regex);
+            Matcher m = p.matcher (res.ResponseText);
+            while (m.find ())
+            {
+                String s=m.group (1)+m.group (2)+m.group (3)+m.group (4)+m.group (5);
+                Log.d ("QiuChen",s);
+            }
+        }
     }
 }

@@ -4,9 +4,11 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,9 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.zip.Inflater;
 
 import MuYuanTeacher.logininfo;
 
@@ -37,7 +41,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         fab.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick (View view) {
-                Snackbar.make (view, "hahahahaha.....", Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
+                Snackbar.make (view, "我就是提示.....", Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
             }
         });
 
@@ -124,10 +128,11 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         public void handleMessage (Message msg) {
             super.handleMessage (msg);
             logininfo.Dialog.show ();
+            final LayoutInflater inflater = LayoutInflater.from(MainPage.this);
             switch (msg.getData().getInt("page"))
             {
                 case 1:
-                    initView1Page();
+                    initView1Page(inflater);
                     Snackbar.make (findViewById (R.id.m_ContentView), "hahahahaha.....", Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
                     logininfo.Dialog.cancel ();
                     break;
@@ -137,8 +142,12 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         }
     };
 
-public void initView1Page()
+public void initView1Page(LayoutInflater inflater)
 {
+    LinearLayout i = (LinearLayout) inflater.inflate(R.layout.mmian_mian, null).findViewById(R.id.m_LeavesView);
+    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.m_ContentView);
+    linearLayout.removeAllViews();
+    linearLayout.addView(i);
     new Thread (){
         @Override
         public void run () {

@@ -34,11 +34,11 @@ public class HttpUntils {
      * @throws IOException IO异常捕捉,请在外部调用Try
      */
     public static ResponseData submitPostData (URL url, String Datas, String Cookie, String ContentType) throws IOException {
-        return submitPostData (url, Datas.getBytes (), Cookie, ContentType,false);
+        return submitPostData (url, Datas.getBytes (), Cookie, ContentType, false);
     }
 
-    public static ResponseData submitPostData (URL url, String Datas, String Cookie, String ContentType,boolean Direct) throws IOException {
-        return submitPostData (url, Datas.getBytes (), Cookie, ContentType,Direct);
+    public static ResponseData submitPostData (URL url, String Datas, String Cookie, String ContentType, boolean Direct) throws IOException {
+        return submitPostData (url, Datas.getBytes (), Cookie, ContentType, Direct);
     }
 
 
@@ -52,7 +52,7 @@ public class HttpUntils {
      * @return 返回网页数据
      * @throws IOException IO异常捕捉,请在外部调用Try
      */
-    public static ResponseData submitPostData (URL url, byte[] Datas, String Cookies, String ContentType,Boolean Redirct) throws IOException {
+    public static ResponseData submitPostData (URL url, byte[] Datas, String Cookies, String ContentType, Boolean Redirct) throws IOException {
 
         byte[] data = Datas;//获得请求体
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
@@ -97,6 +97,64 @@ public class HttpUntils {
                 String urls = httpURLConnection.getHeaderField ("Location");
                 res.ResponseCode = response;
                 res.RedirctUrl = urls;
+                res.ResponseText = "";
+            }
+        } catch (IOException e) {
+            e.printStackTrace ();
+        }
+        //获得服务器的响应码
+        Log.d ("QiuChen", String.valueOf (response));
+        return res;
+    }
+
+    public static ResponseData POST (
+            String urls, String Datas, Map<String, String> RequestHeader, Boolean Redirct
+    ) throws IOException {
+
+        byte[] data = Datas.getBytes ();//获得请求体
+        URL url = new URL (urls);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
+        httpURLConnection.setConnectTimeout (10000);     //设置连接超时时间
+        httpURLConnection.setDoInput (true);                  //打开输入流，以便从服务器获取数据
+        httpURLConnection.setDoOutput (true);                 //打开输出流，以便向服务器提交数据
+        httpURLConnection.setRequestMethod ("POST");     //设置以Post方式提交数据
+        httpURLConnection.setUseCaches (false);               //使用Post方式不能使用缓存
+        httpURLConnection.setInstanceFollowRedirects (Redirct);
+
+        for (Map.Entry<String, String> vo : RequestHeader.entrySet ()) {
+            httpURLConnection.setRequestProperty (vo.getKey (), vo.getValue ());
+        }
+        //设置请求体的长度
+        httpURLConnection.setRequestProperty ("Content-Length", String.valueOf (data.length));
+        //获得输出流，向服务器写入数据
+        OutputStream outputStream = httpURLConnection.getOutputStream ();
+        outputStream.write (data);
+        ResponseData res = new ResponseData ();
+        int response = 0;
+        try {
+            response = httpURLConnection.getResponseCode ();            //获得服务器的响应码
+
+            String cookieskey = "Set-Cookie";
+            Map<String, List<String>> maps = httpURLConnection.getHeaderFields ();
+            List<String> coolist = maps.get (cookieskey);
+            if (coolist != null) {
+                Iterator<String> it = coolist.iterator ();
+                StringBuffer sbu = new StringBuffer ();
+                while (it.hasNext ()) {
+                    sbu.append (it.next ());
+                }
+                Cookie = sbu.toString ();
+            }
+
+            if (response == HttpURLConnection.HTTP_OK) {
+                InputStream inptStream = httpURLConnection.getInputStream ();
+                res.ResponseCode = response;
+                res.ResponseText = dealResponseResult (inptStream);                     //处理服务器的响应结果
+            } else {
+                //如果涉及到非200的跳转,这里直接将其抛出
+                String urlss = httpURLConnection.getHeaderField ("Location");
+                res.ResponseCode = response;
+                res.RedirctUrl = urlss;
                 res.ResponseText = "";
             }
         } catch (IOException e) {
