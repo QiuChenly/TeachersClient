@@ -71,6 +71,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         logininfo.Dialog.setTitle ("页面加载中...");
         logininfo.Dialog.setMessage ("初始化页面数据中...");
         logininfo.Dialog.setCancelable (false);
+
     }
 
     @Override
@@ -125,6 +126,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         int id = item.getItemId ();
         if (id == R.id.mMainPage_Main) {
             toolbar.setTitle ("首页");
+            SwitchViewHandler.sendMessage (BundleMessage (1));
         } else if (id == R.id.nav_gallery) {
             toolbar.setTitle ("学生请假");
             SwitchViewHandler.sendMessage (BundleMessage (2));
