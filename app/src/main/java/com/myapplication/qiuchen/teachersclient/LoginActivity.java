@@ -197,8 +197,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void handleMessage (Message msg) {
                     super.handleMessage (msg);
-                    mProgressView.setVisibility (View.GONE);
-                    findViewById (R.id.Login_button).setVisibility (View.VISIBLE);
+                    if(logininfo.ErrorMsgCode!=1)
+                    {
+                        mProgressView.setVisibility (View.GONE);
+                        findViewById (R.id.Login_button).setVisibility (View.VISIBLE);
+                    }
                     switch (logininfo.ErrorMsgCode) {
                         case 1:
                             Toast.makeText (LoginActivity.this, "登录成功!" + logininfo.mlogininfo.mName + "老师你好!", Toast.LENGTH_SHORT).show ();

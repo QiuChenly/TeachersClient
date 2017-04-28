@@ -10,130 +10,193 @@
               android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/m_LeavesView_WorkView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-        <TextView
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="请选择一个学生:"
+                />
+
+            <Spinner
+                android:id="@+id/m_LeavesSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="40sp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/m_LeavesView_ImageView_mPicture"
+                android:layout_width="70sp"
+                android:layout_height="90sp"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="50sp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/m_LeavesView_TextView_mName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:text="学生姓名:null"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/m_LeavesView_TextView_mStudentID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="学        号:null"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/m_LeavesView_TextView_Department"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="所属院系:null"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/m_LeavesView_TextView_ClassName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:text="所属班级:null"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="请选择一个学生:"
-            />
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/m_LeavesView_TextView_RequestHolidaysTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:text="请假时间:null"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/m_LeavesView_TextView_HolidaysBecause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+
+                android:text="对方の诡辩:null"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/m_LeavesView_TextView_WillComeBackTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+
+                android:text="拟回校时间:null"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/m_LeavesView_TextView_Days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+
+                android:text="请假天数:null"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/m_LeavesView_TextView_OutAdress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+
+                android:text="外出地址:null"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/m_LeavesView_TextView_ContactInfomation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+
+                android:text="联系方式:null"
+                android:textSize="15sp"/>
+        </LinearLayout>
 
         <Spinner
-            android:id="@+id/m_LeavesSpinner"
+            android:id="@+id/m_OpinionSpinner"
             android:layout_width="wrap_content"
             android:layout_height="40sp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:layout_marginTop="10sp"/>
 
+        <Button
+            android:id="@+id/m_LeavesView_Button_AllowRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10sp"
+            android:text="确   认"/>
+
+        <ProgressBar
+            android:id="@+id/m_LeavesView_ProgressBar_AllowRequest"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/m_LeavesView_NoWorkView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
-            android:id="@+id/m_LeavesView_ImageView_mPicture"
-            android:layout_width="70sp"
-            android:layout_height="90sp"
-            android:background="#000000"
-            />
+            android:layout_width="150sp"
+            android:layout_height="150sp"
+            android:layout_gravity="center"
+            android:src="@mipmap/okok"/>
 
         <TextView
-            android:layout_marginTop="5sp"
-            android:id="@+id/m_LeavesView_TextView_mName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="学生姓名:null"
-            android:textSize="15sp"
-            />
+            android:gravity="center"
+            android:text="貌似没有需要处理的请求了哦."
+            android:textSize="50sp"/>
 
-        <TextView
-            android:id="@+id/m_LeavesView_TextView_mStudentID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="学        号:null"
-            android:textSize="15sp"
-            />
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/m_LeavesView_TextView_Department"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="所属院系:null"
-            android:textSize="15sp"/>
-
-        <TextView
-            android:id="@+id/m_LeavesView_TextView_ClassName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5sp"
-            android:text="所属班级:null"
-            android:textSize="15sp"/>
-    </LinearLayout>
-<LinearLayout android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
-              android:orientation="vertical"
-    android:layout_gravity="center">
-
-    <TextView
-        android:id="@+id/m_LeavesView_TextView_RequestHolidaysTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
-        android:text="请假时间:null"
-        android:textSize="15sp"/>
-    <TextView
-        android:id="@+id/m_LeavesView_TextView_WillComeBackTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
-        android:text="拟回校时间:null"
-        android:textSize="15sp"/>
-    <TextView
-        android:id="@+id/m_LeavesView_TextView_Days"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
-        android:text="请假天数:null"
-        android:textSize="15sp"/>
-    <TextView
-        android:id="@+id/m_LeavesView_TextView_OutAdress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
-        android:text="外出地址:null"
-        android:textSize="15sp"/>
-    <TextView
-        android:id="@+id/m_LeavesView_TextView_ContactInfomation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
-        android:text="联系方式:null"
-        android:textSize="15sp"/>
-</LinearLayout>
-    <Button
-        android:id="@+id/m_LeavesView_Button_AllowRequest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="同意"/>
-
-    <ProgressBar
-        android:visibility="invisible"
-        android:id="@+id/m_LeavesView_ProgressBar_AllowRequest"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
-        android:layout_gravity="center"/>
 </LinearLayout>

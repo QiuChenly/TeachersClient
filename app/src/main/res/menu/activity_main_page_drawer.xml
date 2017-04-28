@@ -9,27 +9,7 @@
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="测试项目1"/>
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="测试项目2"/>
-        <item
-            android:id="@+id/nav_manage1"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="测试项目3"/>
-        <item
-            android:id="@+id/nav_manage2"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="测试项目4"/>
-        <item
-            android:id="@+id/nav_manage3"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="测试项目5"/>
-        <item
-            android:id="@+id/nav_manage4"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="测试项目6"/>
+            android:title="学生请假"/>
 
     </group>
 
