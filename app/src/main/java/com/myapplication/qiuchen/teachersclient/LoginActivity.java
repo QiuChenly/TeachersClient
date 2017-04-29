@@ -47,11 +47,6 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
     // UI references.
     private AutoCompleteTextView mUsername;
     private EditText mPasswordView;
@@ -64,16 +59,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView (R.layout.activity_login);
         // Set up the login form.
         mUsername = (AutoCompleteTextView) findViewById (R.id.email);
-        populateAutoComplete ();
         mPasswordView = (EditText) findViewById (R.id.password);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            //如果需要透明导航栏，请加入标记
 
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //如果需要透明导航栏，请加入标记
+            getWindow ().getDecorView ().setSystemUiVisibility (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
+
         logininfo.aolan = new aolanTeacherSystem ();
         logininfo.aolan.aolanTeacherSystem (this);
         logininfo.Share = this.getSharedPreferences ("QiuChenTeachersSet", MODE_PRIVATE);
@@ -110,49 +103,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
         mLoginFormView = findViewById (R.id.login_form);
         mProgressView = findViewById (R.id.Login_ProgressBar);
-
     }
-
-    private void populateAutoComplete () {
-        if (! mayRequestContacts ()) {
-            return;
-        }
-        getLoaderManager ().initLoader (0, null, this);
-    }
-
-    private boolean mayRequestContacts () {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission (READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale (READ_CONTACTS)) {
-            Snackbar.make (mUsername, "请输入账号", Snackbar.LENGTH_INDEFINITE).setAction (android.R.string.ok, new View.OnClickListener () {
-                @Override
-                @TargetApi(Build.VERSION_CODES.M)
-                public void onClick (View v) {
-                    requestPermissions (new String[] {READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                }
-            });
-        } else {
-            requestPermissions (new String[] {READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete ();
-            }
-        }
-    }
-
 
     /**
      * 这个是登录的事件
@@ -204,27 +155,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void handleMessage (Message msg) {
                     super.handleMessage (msg);
-                    if(logininfo.ErrorMsgCode!=1)
-                    {
+                    if (logininfo.ErrorMsgCode != 1) {
                         mProgressView.setVisibility (View.GONE);
                         findViewById (R.id.Login_button).setVisibility (View.VISIBLE);
                     }
                     switch (logininfo.ErrorMsgCode) {
                         case 1:
                             Toast.makeText (LoginActivity.this, "登录成功!" + logininfo.mlogininfo.mName + "老师你好!", Toast.LENGTH_SHORT).show ();
-                            logininfo.edit.putString ("user",user);
-                            logininfo.edit.putString ("pass",password);
+                            logininfo.edit.putString ("user", user);
+                            logininfo.edit.putString ("pass", password);
                             logininfo.edit.apply ();
-                            final Handler hand= new Handler (){
+                            final Handler hand = new Handler () {
                                 @Override
                                 public void handleMessage (Message msg) {
                                     super.handleMessage (msg);
-                                    Intent i=new Intent (LoginActivity.this,MainPage.class);
+                                    Intent i = new Intent (LoginActivity.this, MainPage.class);
                                     startActivity (i);
                                     finish ();
                                 }
                             };
-                            new Thread (){
+                            new Thread () {
                                 @Override
                                 public void run () {
                                     try {
