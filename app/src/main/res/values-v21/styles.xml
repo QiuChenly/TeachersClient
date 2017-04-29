@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarks</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- 如果需要导航栏也透明加下面这行代码 -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

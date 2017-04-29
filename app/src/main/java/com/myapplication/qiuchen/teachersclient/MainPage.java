@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,6 +51,15 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         setContentView (R.layout.activity_main_page);
         toolbar = (Toolbar) findViewById (R.id.toolbar);
         setSupportActionBar (toolbar);
+
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            //如果需要透明导航栏，请加入标记
+
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById (R.id.fab);
         fab.setOnClickListener (new View.OnClickListener () {
@@ -156,8 +166,10 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             final LayoutInflater inflater = LayoutInflater.from (MainPage.this);
             switch (msg.getData ().getInt ("page")) {
                 case 1:
+                    LinearLayout i = (LinearLayout) inflater.inflate (R.layout.index_page, null).findViewById (R.id.index_page_pageview);
                     LinearLayout linearLayout = (LinearLayout) findViewById (R.id.m_ContentView);
                     linearLayout.removeAllViews ();
+                    linearLayout.addView (i);
                     logininfo.Dialog.cancel ();
                     break;
                 case 2:

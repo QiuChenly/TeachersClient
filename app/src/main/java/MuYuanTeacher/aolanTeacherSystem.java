@@ -312,7 +312,7 @@ public class aolanTeacherSystem {
     public int AllowRequestHolidays (String OpinionSelectionStr, String ICode) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_st_xsqj.aspx";
         String Allow;
-        if (ICode == "1") {
+        if (ICode.contains ("1")) {
             Allow = "ON";
         } else {
             Allow = "";
