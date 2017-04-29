@@ -25,6 +25,8 @@
             android:label="首页"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".News_Info">
+        </activity>
     </application>
 
 </manifest>

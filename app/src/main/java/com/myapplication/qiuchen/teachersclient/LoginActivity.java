@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //如果需要透明导航栏，请加入标记
-            getWindow ().getDecorView ().setSystemUiVisibility (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow ().getDecorView ().setSystemUiVisibility (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
 
         logininfo.aolan = new aolanTeacherSystem ();
@@ -103,6 +103,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
         mLoginFormView = findViewById (R.id.login_form);
         mProgressView = findViewById (R.id.Login_ProgressBar);
+
+
+        if (user != "") {
+            login_button.callOnClick ();
+        }
     }
 
     /**

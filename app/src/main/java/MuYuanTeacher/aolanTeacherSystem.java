@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -326,9 +327,9 @@ public class aolanTeacherSystem {
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"qjjtyy\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_qjjtyy + "\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"File1\"; " + "filename=\"\"\nContent-Type: application/octet-stream\n" + "\n" + "\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"fjm\"\n" + "\n" + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: " +
-                "" + "" + "" + "" + "" + "" + "" + "form-data; name=\"wcdz\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_wcdz + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" +
-                "Content-Disposition: " + "form-data; " + "" + "name=\"jzxmlxfs\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_jzxmlxfs + "\n" +
-                "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; " + "name=\"nhxsj\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_nhxsj + "\n" +
+                "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "form-data; name=\"wcdz\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_wcdz + "\n" +
+                "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: " + "form-data; " + "" + "name=\"jzxmlxfs\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_jzxmlxfs +
+                "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; " + "name=\"nhxsj\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_nhxsj + "\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; " + "name=\"qjts\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_qjts + "\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"xjrq\"\n" + "\n" + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" +
                 "Content-Disposition:" + " form-data; name=\"czsj\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_czsj + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" +
@@ -360,7 +361,7 @@ public class aolanTeacherSystem {
                 "\n------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"xp_pkm\"\n" + "\n" + "spyjdm\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" +
                 "Content-Disposition: form-data; name=\"xp_pzd\"\n" + "\n" + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"xp_pjxjdm\"\n" + "\n\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"xp_ipbz\"\n\n" + "1\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: " +
-                "" + "" + "form-data; name=\"xp_pjxjdm2\"\n" + "\n" + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q--";
+                "" + "" + "" + "" + "" + "" + "form-data; name=\"xp_pjxjdm2\"\n" + "\n" + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q--";
         Map<String, String> map = new HashMap<> ();
         map.put ("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryjavwnv5fkvu2i58q");
         map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
@@ -391,10 +392,90 @@ public class aolanTeacherSystem {
         ResponseData res = HttpUntils.POST (url, Data, map, true);
         Pattern p = Pattern.compile ("<span id=\"MyDataGrid__.*?\">(.*?)</span>[\\s]*</font></td><td nowrap=\"nowrap\"><font color=\"Black\">[\\s]*<span id=\"MyDataGrid__.*?\">(.*?)[\\s]*</span>");
         Matcher m = p.matcher (res.ResponseText);
-        logininfo.mlogininfo.Holidays_StudentInfo.OpinionSelection = new ArrayList<String> ();
+        logininfo.mlogininfo.Holidays_StudentInfo.OpinionSelection = new ArrayList<> ();
         while (m.find ()) {
             String s = m.group (1) + "|" + m.group (2);
             logininfo.mlogininfo.Holidays_StudentInfo.OpinionSelection.add (s);
         }
+    }
+
+    public void NewsGet () throws IOException {
+        String url = "http://xgsl.jsahvc.edu.cn/message/message_gg.aspx";
+        String data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        UpdataViewState (data);
+        logininfo.mlogininfo.News = new ArrayList<> ();
+        Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
+        Matcher m = p.matcher (data);
+        int i = 1;
+        while (m.find ()) {
+            logininfo.mlogininfo.News.add (NewsBundle (String.valueOf (i), m.group (1), m.group (5), m.group (3), m.group (2), m.group (4),"mess_gg"));
+            i++;
+        }
+    }
+
+    public void NewsGet_WorkPlan () throws IOException {
+        String url = "http://xgsl.jsahvc.edu.cn/message/message_jh.aspx";
+        String data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        UpdataViewState (data);
+        Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
+        Matcher m = p.matcher (data);
+        logininfo.mlogininfo.News_WorkPaln = new ArrayList<> ();
+        int i = 1;
+        while (m.find ()) {
+            logininfo.mlogininfo.News_WorkPaln.add (NewsBundle (String.valueOf (i), m.group (1), m.group (7), m.group (3), m.group (2), m.group (6),"mess_jh"));
+            i++;
+        }
+    }
+
+    private Map<String, String> NewsBundle (String index, String Title, String Author, String Time, String ID, String Admins,String url) {
+        Map<String, String> map = new HashMap<> ();
+        map.put ("News_index", index);
+        map.put ("News_Title", Title);
+        map.put ("News_Author", Author);
+        map.put ("News_ReportTime", Time);
+        map.put ("News_ID", ID);
+        map.put ("News_Admins", Admins);
+        map.put ("News_Url", url);
+        return map;
+    }
+
+    public void getHtmlCode (String km,String title, String ReportTime, String Id) throws IOException {
+        String url = "http://xgsl.jsahvc.edu.cn/message/message_xs.aspx";
+        String Data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        UpdataViewState (Data);
+         Data = "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n" + "\n" + _viewstate + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + _viewStategenerator + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: " +
+                "form-data; " + "name=\"bt\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"FontName\"\n" + "\n" + "选择字体\n" +
+                "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"FontSize\"\n" + "\n" + "字体大小\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"xzbz\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"bt_y\"\n" + "\n" + title +
+                "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"bt_d\"\n" + "\n" + title + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"bh\"\n" + "\n" + logininfo.mlogininfo.m_bh + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; " +
+                "name=\"bh_d\"\n" + "\n" + Id + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"xh_d\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"tjsj_d\"\n" + "\n" + ReportTime + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"gggr\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"fpath\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"km\"\n" + "\n" + km+"\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"ptitle\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"delexs\"\n" + "\n" + "\n"
+                + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"ylx\"\n" + "\n" + "S\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"nr\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: " + "form-data; name=\"jstj\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"jstjmc\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"fjmbds\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"yhdj\"\n" + "\n" + "\n" +
+                "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"httpst\"\n" + "\n" + "alst" + ".jsahvc.edu.cn\n" +
+                "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"fjmf\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition:" + " form-data; name=\"fjm3\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"tybz\"\n" + "\n" + "\n"
+                + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"fbbz\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition:" + " form-data; name=\"updatexs\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"cw\"\n" + "\n" +
+                "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"gwspjbdm\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT--";
+        Map<String, String> map = new HashMap<> ();
+        map.put ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        map.put ("Accept-Language", "zh-CN,zh;q=0.8");
+        map.put ("Cache-Control", "max-age=0");
+        map.put ("Connection", "keep-alive");
+        map.put ("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundarywPuXoV48UDZByzWT");
+        map.put ("Cookie", HttpUntils.Cookie);
+        map.put ("Host", "xgsl.jsahvc.edu.cn");
+        map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
+        map.put ("Referer", "http://xgsl.jsahvc.edu.cn/message/message_xs.aspx");
+        ResponseData responseData = HttpUntils.POST (url, Data, map, true);
+        logininfo.ErrorMessage=responseData.ResponseText;
     }
 }

@@ -1,16 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:gravity="bottom|center"
               android:id="@+id/index_page_pageview"
-              android:layout_height="match_parent">
-    <TextView
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="bottom|center"
+              android:orientation="vertical">
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="5sp"
         android:layout_marginLeft="5sp"
         android:layout_marginRight="5sp"
+        android:background="@mipmap/recyclerback"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp"
+        android:layout_weight="9">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="学院各项通知"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:textSize="19sp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mRecyclerView"
+                android:layout_marginTop="5sp"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:background="@mipmap/recyclerback"
+                android:layout_height="400dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_marginTop="5sp"
+                android:layout_height="wrap_content"
+                android:text="工作计划信息"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:textSize="19sp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mRecyclerView_WorkPlan"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:layout_marginTop="5sp"
+                android:background="@mipmap/recyclerback"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="5sp"
+                android:layout_height="400dp"/>
+        </LinearLayout>
+    </ScrollView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5sp"
+        android:layout_weight="1"
+        android:layout_marginLeft="5sp"
+        android:layout_marginRight="5sp"
+        android:textColor="#ffffff"
         android:layout_marginTop="5sp"
         android:gravity="bottom|center"
         android:text="AppVer:1.0.0.0\nQiuChenly Design\nComplie Time:2017.04.29\nAways believe that good things are about to happen. "/>
