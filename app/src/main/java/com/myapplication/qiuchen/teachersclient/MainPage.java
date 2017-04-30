@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import MuYuanTeacher.HttpUntils;
+import MuYuanTeacher.RequestServers;
 import MuYuanTeacher.aolanTeacherSystem;
 import MuYuanTeacher.logininfo;
 import MuYuanTeacher.mLoginsData;
@@ -54,8 +55,6 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
     Toolbar toolbar = null;
 
     class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> {
-        View view_old;
-        int IsbeShow = 0;
 
         private List<Map<String, String>> item;
 
@@ -171,6 +170,10 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
         toolbar.setTitle ("首页/学院公告");
         SwitchViewHandler.sendMessage (BundleMessage (1));
+
+        //启动后台服务
+        Intent i=new Intent (MainPage.this, RequestServers.class);
+        startService (i);
     }
 
 

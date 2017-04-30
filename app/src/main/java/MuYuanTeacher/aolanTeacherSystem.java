@@ -102,7 +102,6 @@ public class aolanTeacherSystem {
             if (ress.contains ("系统要求:显示分辨率为")) {
                 url = "http://xgsl.jsahvc.edu.cn/top_1.aspx";
                 ress = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
-                System.out.print (ress);
                 logininfo.mlogininfo.mName = GetSubText (ress, "欢迎你:", "\r", 0).trim ();
                 return 1;
             }
