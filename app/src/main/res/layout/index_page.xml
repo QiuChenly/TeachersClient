@@ -14,7 +14,7 @@
         android:background="@mipmap/recyclerback"
         android:layout_marginTop="5sp"
         android:layout_marginBottom="5sp"
-        android:layout_weight="9">
+        android:layout_weight="20">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,5 +69,5 @@
         android:textColor="#ffffff"
         android:layout_marginTop="5sp"
         android:gravity="bottom|center"
-        android:text="AppVer:1.0.0.0\nQiuChenly Design\nComplie Time:2017.04.29\nAways believe that good things are about to happen. "/>
+        android:text="AppVer:1.0.0.1\nQiuChenly Design\nComplie Time:2017.05.01\nAways believe that good things are about to happen. "/>
 </LinearLayout>

@@ -30,7 +30,7 @@
         </activity>
 
         <service
-            android:name="MuYuanTeacher.RequestServers"
+            android:name=".RequestServers"
             android:enabled="true"
             android:exported="true">
         </service>

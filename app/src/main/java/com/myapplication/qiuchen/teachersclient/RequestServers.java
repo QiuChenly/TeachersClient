@@ -1,4 +1,4 @@
-package MuYuanTeacher;
+package com.myapplication.qiuchen.teachersclient;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,14 +10,12 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.widget.Toast;
-
-import com.myapplication.qiuchen.teachersclient.LoginActivity;
-import com.myapplication.qiuchen.teachersclient.MainPage;
-import com.myapplication.qiuchen.teachersclient.R;
 
 import java.io.IOException;
 import java.util.Random;
+
+import MuYuanTeacher.aolanTeacherSystem;
+import MuYuanTeacher.logininfo;
 
 public class RequestServers extends Service {
     aolanTeacherSystem aolan;
