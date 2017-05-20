@@ -221,7 +221,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             toolbar.setTitle ("学生请假");
             SwitchViewHandler.sendMessage (BundleMessage (2));
         } else if (id == R.id.mMainPage_ChattingRoom) {
-            toolbar.setTitle ("神TM网络聊天室");
+            toolbar.setTitle("公共聊天室");
             SwitchViewHandler.sendMessage (BundleMessage (3));
         } else if (id == R.id.mMainPage_Author) {
             Toast.makeText (this, "你好,我是秋城落叶,有问题想问我?", Toast.LENGTH_SHORT).show ();
