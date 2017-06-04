@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import MuYuanTeacher.aolanSystemClassMate;
 import MuYuanTeacher.aolanTeacherSystem;
 import MuYuanTeacher.logininfo;
 
@@ -54,38 +55,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
-        super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_login);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
         // Set up the login form.
-        mUsername = (AutoCompleteTextView) findViewById (R.id.email);
-        mPasswordView = (EditText) findViewById (R.id.password);
+        mUsername = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //如果需要透明导航栏，请加入标记
-            getWindow ().getDecorView ().setSystemUiVisibility (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
 
-        logininfo.aolan = new aolanTeacherSystem ();
-        logininfo.aolan.aolanTeacherSystem (this);
-        logininfo.Share = this.getSharedPreferences ("QiuChenTeachersSet", MODE_PRIVATE);
-        logininfo.edit = logininfo.Share.edit ();
-        String user = logininfo.Share.getString ("user", "");
+        logininfo.aolan = new aolanTeacherSystem();
+        logininfo.aolanClassMate = new aolanSystemClassMate();
+        logininfo.aolan.aolanTeacherSystem(this);
+        logininfo.Share = this.getSharedPreferences("QiuChenTeachersSet", MODE_PRIVATE);
+        logininfo.edit = logininfo.Share.edit();
+        String user = logininfo.Share.getString("user", "");
         if (user != "") {
-            mUsername.setText (user);
+            mUsername.setText(user);
         }
-        String pass = logininfo.Share.getString ("pass", "");
+        String pass = logininfo.Share.getString("pass", "");
         if (user != "") {
-            mPasswordView.setText (pass);
+            mPasswordView.setText(pass);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
-            mPasswordView.setOnEditorActionListener (new TextView.OnEditorActionListener () {
+            mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public boolean onEditorAction (TextView textView, int id, KeyEvent keyEvent) {
-                    if (id == R.id.login||id == EditorInfo.IME_NULL) {
-                        attemptLogin ();
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        attemptLogin();
                         return true;
                     }
                     return false;
@@ -94,48 +96,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         //定义登录按钮的操作
-        Button login_button = (Button) findViewById (R.id.Login_button);
-        login_button.setOnClickListener (new OnClickListener () {
+        Button login_button = (Button) findViewById(R.id.Login_button);
+        login_button.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick (View view) {
-                attemptLogin ();
+            public void onClick(View view) {
+                attemptLogin();
             }
         });
-        mLoginFormView = findViewById (R.id.login_form);
-        mProgressView = findViewById (R.id.Login_ProgressBar);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.Login_ProgressBar);
 
 
-        if (user != "") {
-            login_button.callOnClick ();
+        if (user != "" && logininfo.LoginState == 0) {
+            login_button.callOnClick();
         }
     }
 
     /**
      * 这个是登录的事件
      */
-    private void attemptLogin () {
+    private void attemptLogin() {
 
         // Reset errors.
-        mUsername.setError (null);
-        mPasswordView.setError (null);
+        mUsername.setError(null);
+        mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        final String user = mUsername.getText ().toString ();
-        final String password = mPasswordView.getText ().toString ();
+        final String user = mUsername.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (! TextUtils.isEmpty (password)&&! isPasswordValid (password)) {
-            mPasswordView.setError ("请输入密码可好");
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+            mPasswordView.setError("请输入密码可好");
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty (user)) {
-            mUsername.setError ("账号在哪里...?");
+        if (TextUtils.isEmpty(user)) {
+            mUsername.setError("账号在哪里...?");
             focusView = mUsername;
             cancel = true;
         }
@@ -148,88 +150,88 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView.requestFocus ();
+            focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
-            mProgressView.setVisibility (View.VISIBLE);
-            findViewById (R.id.Login_button).setVisibility (View.GONE);
+            mProgressView.setVisibility(View.VISIBLE);
+            findViewById(R.id.Login_button).setVisibility(View.GONE);
 
-            final Handler handler = new Handler () {
+            final Handler handler = new Handler() {
                 @Override
-                public void handleMessage (Message msg) {
-                    super.handleMessage (msg);
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
                     if (logininfo.ErrorMsgCode != 1) {
-                        mProgressView.setVisibility (View.GONE);
-                        findViewById (R.id.Login_button).setVisibility (View.VISIBLE);
+                        mProgressView.setVisibility(View.GONE);
+                        findViewById(R.id.Login_button).setVisibility(View.VISIBLE);
                     }
                     switch (logininfo.ErrorMsgCode) {
                         case 1:
-                            Toast.makeText (LoginActivity.this, "登录成功!" + logininfo.mlogininfo.mName + "老师你好!", Toast.LENGTH_SHORT).show ();
-                            logininfo.edit.putString ("user", user);
-                            logininfo.edit.putString ("pass", password);
-                            logininfo.edit.apply ();
-                            final Handler hand = new Handler () {
+                            Toast.makeText(LoginActivity.this, "登录成功!" + logininfo.mlogininfo.mName + "老师你好!", Toast.LENGTH_SHORT).show();
+                            logininfo.edit.putString("user", user);
+                            logininfo.edit.putString("pass", password);
+                            logininfo.edit.apply();
+                            final Handler hand = new Handler() {
                                 @Override
-                                public void handleMessage (Message msg) {
-                                    super.handleMessage (msg);
-                                    Intent i = new Intent (LoginActivity.this, MainPage.class);
-                                    startActivity (i);
-                                    finish ();
+                                public void handleMessage(Message msg) {
+                                    super.handleMessage(msg);
+                                    Intent i = new Intent(LoginActivity.this, MainPage.class);
+                                    startActivity(i);
+                                    finish();
                                 }
                             };
-                            new Thread () {
+                            new Thread() {
                                 @Override
-                                public void run () {
+                                public void run() {
                                     try {
-                                        logininfo.aolan.findOnlinePersonCount ();
-                                        hand.sendEmptyMessage (0);
+                                        logininfo.aolan.findOnlinePersonCount();
+                                        hand.sendEmptyMessage(0);
                                     } catch (IOException e) {
-                                        e.printStackTrace ();
+                                        e.printStackTrace();
                                     }
                                 }
-                            }.start ();
+                            }.start();
                             break;
                         case 2:
-                            Toast.makeText (LoginActivity.this, logininfo.ErrorMessage, Toast.LENGTH_SHORT).show ();
+                            Toast.makeText(LoginActivity.this, logininfo.ErrorMessage, Toast.LENGTH_SHORT).show();
                             break;
                         case 3:
-                            Toast.makeText (LoginActivity.this, "未知错误!请联系作者!QQ:963084062", Toast.LENGTH_SHORT).show ();
+                            Toast.makeText(LoginActivity.this, "未知错误!请联系作者!QQ:963084062", Toast.LENGTH_SHORT).show();
                             break;
                     }
 
                 }
             };
 
-            new Thread () {
+            new Thread() {
                 @Override
-                public void run () {
+                public void run() {
                     try {
-                        logininfo.ErrorMsgCode = logininfo.aolan.mLoginSystem (user, password);
+                        logininfo.ErrorMsgCode = logininfo.aolan.mLoginSystem(user, password);
                     } catch (IOException e) {
-                        e.printStackTrace ();
+                        e.printStackTrace();
                     }
-                    handler.sendEmptyMessage (0);
+                    handler.sendEmptyMessage(0);
                 }
-            }.start ();
+            }.start();
 
         }
     }
 
-    private boolean isPasswordValid (String password) {
+    private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length () > 4;
+        return password.length() > 4;
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader (int i, Bundle bundle) {
-        return new CursorLoader (this,
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new CursorLoader(this,
                 // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath (ContactsContract.Profile.CONTENT_URI, ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI, ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
                 // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE + " = ?", new String[] {ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
+                ContactsContract.Contacts.Data.MIMETYPE + " = ?", new String[]{ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
 
                 // Show primary email addresses first. Note that there won't be
                 // a primary email address if the user hasn't specified one.
@@ -237,26 +239,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @Override
-    public void onLoadFinished (Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<> ();
-        cursor.moveToFirst ();
-        while (! cursor.isAfterLast ()) {
-            emails.add (cursor.getString (ProfileQuery.ADDRESS));
-            cursor.moveToNext ();
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        List<String> emails = new ArrayList<>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            cursor.moveToNext();
         }
 
-        addEmailsToAutoComplete (emails);
+        addEmailsToAutoComplete(emails);
     }
 
     @Override
-    public void onLoaderReset (Loader<Cursor> cursorLoader) {
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
 
-    private void addEmailsToAutoComplete (List<String> emailAddressCollection) {
+    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter = new ArrayAdapter<> (LoginActivity.this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-        mUsername.setAdapter (adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(LoginActivity.this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+        mUsername.setAdapter(adapter);
     }
 
 

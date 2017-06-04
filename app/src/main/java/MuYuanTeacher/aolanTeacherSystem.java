@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
  */
 
 public class aolanTeacherSystem {
-    public String _viewstate = "";
-    public String _viewStategenerator = "";
     Context mContext = null;
 
     public void aolanTeacherSystem (Context c) {
@@ -49,8 +47,8 @@ public class aolanTeacherSystem {
      * @param ResponseBody 返回的网页数据
      */
     public void UpdataViewState (String ResponseBody) {
-        _viewstate = GetSubText (ResponseBody, "id=\"__VIEWSTATE\" value=\"", "\"", 0);
-        _viewStategenerator = GetSubText (ResponseBody, "id=\"__VIEWSTATEGENERATOR\" value=\"", "\"", 0);
+        logininfo. _viewstate = GetSubText (ResponseBody, "id=\"__VIEWSTATE\" value=\"", "\"", 0);
+        logininfo._viewStategenerator = GetSubText (ResponseBody, "id=\"__VIEWSTATEGENERATOR\" value=\"", "\"", 0);
     }
 
     public static String md5 (String string) {
@@ -95,7 +93,7 @@ public class aolanTeacherSystem {
         String D = md5 (Pass.toUpperCase ()).toUpperCase ();
         String data = HttpUntils.Get(url, "");
         UpdataViewState (data);
-        data = "__VIEWSTATE=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator + "&userbh=" + UserID + "&pass=" + D + "&cw=&xzbz=1";
+        data = "__VIEWSTATE=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" + logininfo._viewStategenerator + "&userbh=" + UserID + "&pass=" + D + "&cw=&xzbz=1";
         ResponseData res = HttpUntils.POST(new URL(url), data, HttpUntils.Cookie, "application/x-www-form-urlencoded");
         if (res.ResponseCode != 200) {
             String ress = HttpUntils.Get("http://xgsl.jsahvc.edu.cn" + res.RedirctUrl, HttpUntils.Cookie);
@@ -139,7 +137,7 @@ public class aolanTeacherSystem {
         map.put ("Host", "xgsl.jsahvc.edu.cn");
         map.put ("Cookie", HttpUntils.Cookie);
 
-        data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator +
+        data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" + logininfo._viewStategenerator +
                 "&ym=1&xzbz=0&ptj=&km=&ar1_gs=0&dc_bq=&N_HT=&N_DF=&N_DF2=&ppage=0&fy=&xzclk1=xdm" +
                 "&xzclk2=bjhm&xzclk3=xh&xzclk4=xm&xzgjc=xh&ii_z=0&ii_d=&dy_bz=1&dy_hz=&hei=&dc_f1=&dc_f2=&n_ni=&n_nim=&n_hj=&n_hjz=&n_hjzdx=&pgs=40&phs=25&allbz=&xq=&rzbz=1&czsj=&gjz=&cw=&mbbz" +
                 "=&xfl_y=";
@@ -178,7 +176,7 @@ public class aolanTeacherSystem {
         String url = "http://xgsl.jsahvc.edu.cn/student/r_3_1_sy.aspx";
         String Data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (Data);
-        Data = "__EVENTTARGET=&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE" + "=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator + "&x=" + EncodeStr (DepartmentName) +
+        Data = "__EVENTTARGET=&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE" + "=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" + logininfo._viewStategenerator + "&x=" + EncodeStr (DepartmentName) +
                 "&bjhm=" + EncodeStr (ClassName) + "&gjc=xh&gjc_z=" + StudentID + "&xm=&xdm=&iud2=&pzd=xdm%2Cbjhm%2Cxh%2Cxm&xzbz=1&psrc=&pxj=&pcf=&rxsj=&km_lx=sy_&xh=" + StudentID +
                 "&km=st_xsqj&czsj=" + EncodeStr (RequestTime) + "&xp_pmc" + "=&xp_pval" + "=&xp_plx=&xp_pkm=&xp_pzd=&xp_pjxjdm=&xp_ipbz=&xp_pjxjdm2=";
         Map<String, String> map = new HashMap<> ();
@@ -208,7 +206,7 @@ public class aolanTeacherSystem {
         UpdataViewState (Data);
         Data = "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__EVENTTARGET\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
                 "Content-Disposition: form-data; name=\"__EVENTARGUMENT\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n"
-                + "\n" + _viewstate + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; " + "name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + _viewStategenerator +
+                + "\n" + logininfo._viewstate + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; " + "name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + logininfo._viewStategenerator +
                 "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qjsj\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
                 "Content-Disposition: form-data; name=\"qjsy\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qjsydm\"\n" + "\n" + "\n" +
                 "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"qjjtyy\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
@@ -318,7 +316,7 @@ public class aolanTeacherSystem {
         }
         String Data = "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"__EVENTTARGET\"\n" + "\n" + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" +
                 "Content-Disposition: form-data; name=\"__EVENTARGUMENT\"\n" + "\n" + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n"
-                + "\n" + _viewstate + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + _viewStategenerator + "\n" +
+                + "\n" + logininfo._viewstate + "\n" + "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + logininfo._viewStategenerator + "\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"qjsj\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_RequestTime + "\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"qjsy\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_qjsy + "\n" +
                 "------WebKitFormBoundaryjavwnv5fkvu2i58q\n" + "Content-Disposition: form-data; name=\"qjsydm\"\n" + "\n" + logininfo.mlogininfo.Holidays_StudentInfo.m_qjsydm + "\n" +
@@ -381,7 +379,7 @@ public class aolanTeacherSystem {
         String url = "http://xgsl.jsahvc.edu.cn/student/xzdm.aspx";
         String Data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (Data);
-        Data = "__VIEWSTATE=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator + "&mh=&tj=&pdm=&pmc=fdyspyj&pdm2=&pmc2=&pjxjdm=&pjxjdm2=&pval=&plx=&pkm=spyjdm&pzd=&xzbz=0"
+        Data = "__VIEWSTATE=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" +logininfo. _viewStategenerator + "&mh=&tj=&pdm=&pmc=fdyspyj&pdm2=&pmc2=&pjxjdm=&pjxjdm2=&pval=&plx=&pkm=spyjdm&pzd=&xzbz=0"
                 + "&pxdm=&ipbz=1&cwbz=";
 
         Map<String, String> map = new HashMap<> ();
@@ -400,7 +398,7 @@ public class aolanTeacherSystem {
     public void NewsGet () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_gg.aspx";
         String data = HttpUntils.Get(url, HttpUntils.Cookie);
-        UpdataViewState (data);
+        //UpdataViewState (data);
         logininfo.mlogininfo.News = new ArrayList<> ();
         Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
         Matcher m = p.matcher (data);
@@ -414,7 +412,7 @@ public class aolanTeacherSystem {
     public void NewsGet_WorkPlan () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_jh.aspx";
         String data = HttpUntils.Get(url, HttpUntils.Cookie);
-        UpdataViewState (data);
+        //UpdataViewState (data);
         Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
         Matcher m = p.matcher (data);
         logininfo.mlogininfo.News_WorkPaln = new ArrayList<> ();
@@ -441,8 +439,8 @@ public class aolanTeacherSystem {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_xs.aspx";
         String Data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (Data);
-         Data = "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n" + "\n" + _viewstate + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
-                "Content-Disposition: form-data; name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + _viewStategenerator + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: " +
+         Data = "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n" + "\n" +logininfo. _viewstate + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
+                "Content-Disposition: form-data; name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + logininfo._viewStategenerator + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: " +
                 "form-data; " + "name=\"bt\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"FontName\"\n" + "\n" + "选择字体\n" +
                 "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"FontSize\"\n" + "\n" + "字体大小\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
                 "Content-Disposition: form-data; name=\"xzbz\"\n" + "\n" + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"bt_y\"\n" + "\n" + title +

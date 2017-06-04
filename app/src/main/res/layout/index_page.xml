@@ -69,5 +69,5 @@
         android:textColor="#ffffff"
         android:layout_marginTop="5sp"
         android:gravity="bottom|center"
-        android:text="AppVer:1.0.0.1\nQiuChenly Design\nComplie Time:2017.05.01\nAways believe that good things are about to happen. "/>
+        android:text="AppVer:1.0.0.2\nQiuChenly Design\nComplie Time:2017.06.04\nAways believe that good things are about to happen. "/>
 </LinearLayout>
