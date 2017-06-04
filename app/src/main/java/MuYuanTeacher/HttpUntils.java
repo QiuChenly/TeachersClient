@@ -1,4 +1,4 @@
-package ruokuaihelper;
+package MuYuanTeacher;
 
 
 import android.graphics.Bitmap;
@@ -35,7 +35,7 @@ public class HttpUntils {
      * @return 返回网页数据
      * @throws IOException IO异常捕捉,请在外部调用Try
      */
-    public static ResponseData submitPostData (URL url, String Datas, String Cookie, String ContentType) throws IOException {
+    public static ResponseData POST(URL url, String Datas, String Cookie, String ContentType) throws IOException {
         return POST (url, Datas.getBytes (), Cookie, ContentType, false);
     }
 
@@ -49,13 +49,14 @@ public class HttpUntils {
      * @return 返回自定义数据类型
      * @throws IOException
      */
-    public static ResponseData submitPostData (URL url, String Datas, String Cookie, String ContentType, boolean Direct) throws IOException {
+    public static ResponseData POST(URL url, String Datas, String Cookie, String ContentType, boolean Direct) throws IOException {
         return POST (url, Datas.getBytes (), Cookie, ContentType, Direct);
     }
 
 
     /**
      * 提交自定义数据到服务器
+     * QiuChenly
      *
      * @param url         网址
      * @param Datas       数据,Byte数据
@@ -74,10 +75,9 @@ public class HttpUntils {
         httpURLConnection.setRequestMethod ("POST");     //设置以Post方式提交数据
         httpURLConnection.setUseCaches (false);               //使用Post方式不能使用缓存
         httpURLConnection.setInstanceFollowRedirects (Redirct);
-        //设置请求体的类型是文本类型
+        //设置请求体的类型
         httpURLConnection.setRequestProperty ("Content-Type", ContentType);
         httpURLConnection.setRequestProperty ("Cookie", Cookies);
-        //设置请求体的长度
         httpURLConnection.setRequestProperty ("Content-Length", String.valueOf (data.length));
         //获得输出流，向服务器写入数据
         OutputStream outputStream = httpURLConnection.getOutputStream ();
@@ -324,15 +324,4 @@ public class HttpUntils {
         }
         return bitmap;
     }
-}
-
-/**
- *  POST数据提交返回类,用于处理Redrict重定向问题
- *  QiuChenly
- *  2017.6.2
- */
- class ResponseData {
-    public int ResponseCode;
-    public String ResponseText;
-    public String RedirctUrl;
 }

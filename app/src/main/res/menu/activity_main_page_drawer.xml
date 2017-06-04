@@ -9,11 +9,15 @@
         <item
             android:id="@+id/mMainPage_ChattingRoom"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="神TM公共聊天室"/>
+            android:title="公共聊天室(未测试)" />
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="学生请假"/>
+
+        <item
+            android:id="@+id/mAllClassMate"
+            android:title="我的所有班级" />
 
     </group>
 

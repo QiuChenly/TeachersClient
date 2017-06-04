@@ -93,15 +93,15 @@ public class aolanTeacherSystem {
     public int mLoginSystem (String UserID, String Pass) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/login.aspx";
         String D = md5 (Pass.toUpperCase ()).toUpperCase ();
-        String data = HttpUntils.getURLResponse (url, "");
+        String data = HttpUntils.Get(url, "");
         UpdataViewState (data);
         data = "__VIEWSTATE=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator + "&userbh=" + UserID + "&pass=" + D + "&cw=&xzbz=1";
-        ResponseData res = HttpUntils.submitPostData (new URL (url), data, HttpUntils.Cookie, "application/x-www-form-urlencoded");
+        ResponseData res = HttpUntils.POST(new URL(url), data, HttpUntils.Cookie, "application/x-www-form-urlencoded");
         if (res.ResponseCode != 200) {
-            String ress = HttpUntils.getURLResponse ("http://xgsl.jsahvc.edu.cn" + res.RedirctUrl, HttpUntils.Cookie);
+            String ress = HttpUntils.Get("http://xgsl.jsahvc.edu.cn" + res.RedirctUrl, HttpUntils.Cookie);
             if (ress.contains ("系统要求:显示分辨率为")) {
                 url = "http://xgsl.jsahvc.edu.cn/top_1.aspx";
-                ress = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+                ress = HttpUntils.Get(url, HttpUntils.Cookie);
                 logininfo.mlogininfo.mName = GetSubText (ress, "欢迎你:", "\r", 0).trim ();
                 return 1;
             }
@@ -115,7 +115,7 @@ public class aolanTeacherSystem {
 
     public void findOnlinePersonCount () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/online.aspx?xzbz=f";
-        logininfo.ErrorMessage = HttpUntils.getURLResponse (url, HttpUntils.Cookie, "http://xgsl.jsahvc.edu.cn/top_1.aspx");
+        logininfo.ErrorMessage = HttpUntils.Get(url, HttpUntils.Cookie, "http://xgsl.jsahvc.edu.cn/top_1.aspx");
         UpdataViewState (logininfo.ErrorMessage);
         logininfo.mlogininfo.m_YXDM = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"yxdm\" value=\"", "\"", 0);
         logininfo.mlogininfo.m_bh = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"bh\" value=\"", "\"", 0);
@@ -126,7 +126,7 @@ public class aolanTeacherSystem {
 
     public void getAllLeaveState () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/r_2_5_1.aspx";
-        String data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        String data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (data);
         Map<String, String> map = new HashMap<> ();
         map.put ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
@@ -162,7 +162,6 @@ public class aolanTeacherSystem {
                 maps.put ("LeiXing", m.group (6));
                 logininfo.mlogininfo.LeavesPerson.add (maps);
             }
-
         }
     }
 
@@ -177,7 +176,7 @@ public class aolanTeacherSystem {
      */
     public void QueryStudentLeaveInfomation (String DepartmentName, String ClassName, String StudentID, String RequestTime) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/r_3_1_sy.aspx";
-        String Data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        String Data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (Data);
         Data = "__EVENTTARGET=&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE" + "=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator + "&x=" + EncodeStr (DepartmentName) +
                 "&bjhm=" + EncodeStr (ClassName) + "&gjc=xh&gjc_z=" + StudentID + "&xm=&xdm=&iud2=&pzd=xdm%2Cbjhm%2Cxh%2Cxm&xzbz=1&psrc=&pxj=&pcf=&rxsj=&km_lx=sy_&xh=" + StudentID +
@@ -205,7 +204,7 @@ public class aolanTeacherSystem {
 
         //同步获取这位同学的数据
         url = "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_st_xsqj.aspx";
-        Data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        Data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (Data);
         Data = "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__EVENTTARGET\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
                 "Content-Disposition: form-data; name=\"__EVENTARGUMENT\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n"
@@ -380,7 +379,7 @@ public class aolanTeacherSystem {
 
     public void initOpinionSelection () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/xzdm.aspx";
-        String Data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        String Data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (Data);
         Data = "__VIEWSTATE=" + EncodeStr (_viewstate) + "&__VIEWSTATEGENERATOR=" + _viewStategenerator + "&mh=&tj=&pdm=&pmc=fdyspyj&pdm2=&pmc2=&pjxjdm=&pjxjdm2=&pval=&plx=&pkm=spyjdm&pzd=&xzbz=0"
                 + "&pxdm=&ipbz=1&cwbz=";
@@ -400,7 +399,7 @@ public class aolanTeacherSystem {
 
     public void NewsGet () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_gg.aspx";
-        String data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        String data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (data);
         logininfo.mlogininfo.News = new ArrayList<> ();
         Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
@@ -414,7 +413,7 @@ public class aolanTeacherSystem {
 
     public void NewsGet_WorkPlan () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_jh.aspx";
-        String data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        String data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (data);
         Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
         Matcher m = p.matcher (data);
@@ -440,7 +439,7 @@ public class aolanTeacherSystem {
 
     public void getHtmlCode (String km,String title, String ReportTime, String Id) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_xs.aspx";
-        String Data = HttpUntils.getURLResponse (url, HttpUntils.Cookie);
+        String Data = HttpUntils.Get(url, HttpUntils.Cookie);
         UpdataViewState (Data);
          Data = "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n" + "\n" + _viewstate + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
                 "Content-Disposition: form-data; name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + _viewStategenerator + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: " +
