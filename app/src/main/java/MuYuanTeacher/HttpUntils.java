@@ -300,18 +300,24 @@ public class HttpUntils {
         return s;
     }
 
+
+    public static Bitmap getImageBitmap(String url){
+        return getImageBitmap(url,"");
+    }
+
     /**
      * 从指定URL获取图片
      * @param url
      * @return Bitmap数据
      */
-    public static Bitmap getImageBitmap (String url) {
+    public static Bitmap getImageBitmap (String url,String Cookies) {
         URL imgUrl = null;
         Bitmap bitmap = null;
         try {
             imgUrl = new URL (url);
             HttpURLConnection conn = (HttpURLConnection) imgUrl.openConnection ();
             conn.setDoInput (true);
+            conn.setRequestProperty ("Cookie", Cookies);
             conn.connect ();
             InputStream is = conn.getInputStream ();
             bitmap = BitmapFactory.decodeStream (is);

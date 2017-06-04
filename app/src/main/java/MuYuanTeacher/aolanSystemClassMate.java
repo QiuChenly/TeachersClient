@@ -1,5 +1,9 @@
 package MuYuanTeacher;
 
+import android.graphics.Bitmap;
+
+import org.apache.http.protocol.HTTP;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -33,4 +37,17 @@ public class aolanSystemClassMate extends aolanTeacherSystem {
         }
         return list;
     }
+
+    /**
+     * 获取该学生的个人照片
+     * @param nd 该学生所在年级
+     * @param CardsId 该学生所在身份证ID
+     * @return 返回图片
+     */
+    public Bitmap getThisStudentCardIDPic(String nd,String CardsId){
+        String u="http://xgsl.jsahvc.edu.cn/student/tpxs.aspx?id=/"+nd+"/"+CardsId+".jpg";
+        return HttpUntils.getImageBitmap(u);
+    }
+
+    
 }

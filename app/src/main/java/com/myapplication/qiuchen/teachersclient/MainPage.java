@@ -221,8 +221,11 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             toolbar.setTitle ("学生请假");
             SwitchViewHandler.sendMessage (BundleMessage (2));
         } else if (id == R.id.mMainPage_ChattingRoom) {
-            toolbar.setTitle("公共聊天室");
+            toolbar.setTitle("公共聊天室(未测试)");
             SwitchViewHandler.sendMessage (BundleMessage (3));
+        }else if (id==R.id.mAllClassMate){
+            toolbar.setTitle("我的班级");
+            SwitchViewHandler.sendMessage (BundleMessage (4));
         } else if (id == R.id.mMainPage_Author) {
             Toast.makeText (this, "你好,我是秋城落叶,有问题想问我?", Toast.LENGTH_SHORT).show ();
         } else if (id == R.id.mMainPage_AuthorEmail) {
@@ -263,9 +266,22 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 case 2:
                     initView2Page (inflater);
                     break;
+                case 4:
+                    initmClassMateView(inflater);
+                    break;
             }
         }
     };
+    public void initmClassMateView(LayoutInflater inflater){
+        LinearLayout i=(LinearLayout)inflater.inflate(R.layout.activity_mallclassmate,null).findViewById(R.id.m_View_mAllClassMate);
+        LinearLayout linearLayout=(LinearLayout)findViewById(R.id.m_ContentView);
+        linearLayout.removeAllViews();
+        linearLayout.addView(i);
+
+
+
+        logininfo.Dialog.cancel();
+    }
 
     public void initView1Page (LayoutInflater inflater) {
         LinearLayout i = (LinearLayout) inflater.inflate (R.layout.index_page, null).findViewById (R.id.index_page_pageview);
