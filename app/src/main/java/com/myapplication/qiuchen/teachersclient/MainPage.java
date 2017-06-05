@@ -2,14 +2,21 @@ package com.myapplication.qiuchen.teachersclient;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +46,7 @@ import MuYuanTeacher.HttpUntils;
 import MuYuanTeacher.aolanTeacherSystem;
 import MuYuanTeacher.logininfo;
 import MuYuanTeacher.mLoginsData;
+import MuYuanTeacher.studentInfoClass;
 
 public class MainPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     long BackTime = 0;
@@ -119,6 +127,111 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 //                        }
                     }
                 });
+            }
+        }
+    }
+    class mAllClassAdapter extends RecyclerView.Adapter<mAllClassAdapter.MyViewHolder> {
+
+        private List<studentInfoClass> item;
+
+
+        public void SetAdapterListData(List<studentInfoClass> list) {
+            item = list;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            MyViewHolder holder = new MyViewHolder(LayoutInflater.from(MainPage.this).inflate(R.layout.mallcalssmate_view, parent, false));
+            return holder;
+        }
+
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, int position) {
+            ViewGroup.LayoutParams params =  holder.itemView.getLayoutParams();//得到item的LayoutParams布局参数
+            params.height = logininfo.getRandom();//把随机的高度赋予itemView布局
+            holder.itemView.setLayoutParams(params);//把params设置给itemView布局
+            final studentInfoClass stu = item.get(position);
+            holder.m_TextView_mAllClassMate_studentId.setText(stu.studentId);
+            holder.m_TextView_mAllClassMate_studentMobileNum.setText(stu.studentMobileNumber);
+            holder.m_TextView_mAllClassMate_studentName.setText(stu.studentName);
+            final Handler h=new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    Bitmap b=msg.getData().getParcelable("image");
+                    holder.m_LinearLayout_mAllClassMateView.setBackground(new BitmapDrawable(b));
+                }
+            };
+            new Thread(){
+                @Override
+                public void run() {
+                    Bitmap b=logininfo.aolanClassMate.getThisStudentCardIDPic("2015",stu.studentCardId);
+                    Bundle s=new Bundle();
+                    s.putParcelable("image",b);
+                    Message msg =new Message();
+                    msg.setData(s);
+                    h.sendMessage(msg);
+                }
+            }.start();
+        }
+
+        @Override
+        public int getItemCount() {
+            return item.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            TextView m_TextView_mAllClassMate_studentName;
+            TextView m_TextView_mAllClassMate_studentId;
+            TextView m_TextView_mAllClassMate_studentMobileNum;
+            LinearLayout m_LinearLayout_mAllClassMateView;
+
+            public MyViewHolder(View view) {
+                super(view);
+                m_TextView_mAllClassMate_studentName = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentName);
+                m_TextView_mAllClassMate_studentId = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentId);
+                m_TextView_mAllClassMate_studentMobileNum = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentMobileNum);
+                m_LinearLayout_mAllClassMateView = (LinearLayout) view.findViewById(R.id.m_LinearLayout_mAllClassMateView);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainPage.this, "提示!!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int spanCount;
+        private int spacing;
+        private boolean includeEdge;
+
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = spacing;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view); // item position
+            int column = position % spanCount; // item column
+
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+                if (position < spanCount) { // top edge
+                    outRect.top = spacing;
+                }
+                outRect.bottom = spacing; // item bottom
+            } else {
+                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
+                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = spacing; // item top
+                }
             }
         }
     }
@@ -292,6 +405,23 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                        String str=logininfo.classMate.get(position);
                         //TODO:以后备用方法
+
+                        final Handler classMate=new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                if (logininfo.studentInfo == null) {
+                                    logininfo.studentInfo= new ArrayList<studentInfoClass>();
+                                }
+                                mAllClassAdapter mallclass = new mAllClassAdapter();
+                                mallclass.SetAdapterListData(logininfo.studentInfo);
+                                RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.m_RecyclerView_mAllClassmate);
+                                mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));//这里用线性显示 类似于listview
+                                mRecyclerView.setHasFixedSize(true);
+                                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2,10,true));
+                                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                                mRecyclerView.setAdapter(mallclass);
+                            }
+                        };
                         final Handler h = new Handler() {
                             @Override
                             public void handleMessage(Message msg) {
@@ -300,8 +430,22 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                                 ((Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS)).setAdapter(arrayAdapter);
                                 ((Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                     @Override
-                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                    public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
 
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    String[] s = logininfo.classMate_CLASS.get(position).split("\\|");
+                                                    String count = logininfo.aolan.GetSubText(s[0], "(", ")", 0);
+                                                    String[] className = s[0].split("\\(");
+                                                    logininfo.studentInfo = logininfo.aolanClassMate.getThisClassStudent(className[0], s[1], count);
+                                                    classMate.sendEmptyMessage(0);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }.start();
                                     }
 
                                     @Override

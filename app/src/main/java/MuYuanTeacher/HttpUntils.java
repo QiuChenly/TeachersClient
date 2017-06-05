@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -233,7 +234,13 @@ public class HttpUntils {
     }
 
     public static String Get (String urlString, String Cookies, String Referer) throws IOException {
-        return Get (urlString, Cookies, "UTF-8", Referer);
+        Map<String ,String> m=new HashMap<>();
+        m.put("Accept", "*/*");
+        m.put("Referer", Referer);
+        m.put("Accept-Language", "zh-cn");
+        m.put("Cookie", Cookies);
+        m.put("Content-Type", "application/x-www-form-urlencoded");
+        return Get (urlString, "UTF-8", m);
     }
 
     /**
@@ -244,7 +251,13 @@ public class HttpUntils {
      * @throws IOException
      */
     public static String Get (String urlString, String Cookies) throws IOException {
-        return Get (urlString, Cookies, "UTF-8", urlString);
+        Map<String ,String> m=new HashMap<>();
+        m.put("Accept", "*/*");
+        m.put("Referer", urlString);
+        m.put("Accept-Language", "zh-cn");
+        m.put("Cookie", Cookies);
+        m.put("Content-Type", "application/x-www-form-urlencoded");
+        return Get (urlString, "UTF-8", m);
     }
 
     /**
@@ -254,19 +267,24 @@ public class HttpUntils {
      * @throws IOException 使用不当会出SB NPE,抛出就好了
      */
     public  static String Get(String urlString) throws IOException {
-        return Get (urlString, "", "UTF-8", urlString);
+        Map<String ,String> m=new HashMap<>();
+        m.put("Accept", "*/*");
+        m.put("Referer", urlString);
+        m.put("Accept-Language", "zh-cn");
+        m.put("Cookie", "");
+        m.put("Content-Type", "application/x-www-form-urlencoded");
+        return Get (urlString, "UTF-8", m);
     }
 
     /**
      *  Get方式访问网页,获取响应流
      * @param urlString URL地址
-     * @param CookieEx 带上Cookie
      * @param CharSet 设置返回的解码字符串
-     * @param Referer 伪造来源地址
+     * @param RequestHeader 协议头
      * @return 返回解码的数据
      * @throws IOException NPE,抛出就好了
      */
-    public static String Get (String urlString, String CookieEx, String CharSet, String Referer) throws IOException {
+    public static String Get (String urlString, String CharSet, Map<String,String> RequestHeader) throws IOException {
         String s = null;
         URL url = new URL (urlString); //URL对象
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
@@ -274,11 +292,10 @@ public class HttpUntils {
         httpURLConnection.setDoInput (true);                  //打开输入流，以便从服务器获取数据
         httpURLConnection.setRequestMethod ("GET");     //设置以Get方式提交数据
         httpURLConnection.setUseCaches (false);
-        httpURLConnection.setRequestProperty ("Accept", "*/*");
-        httpURLConnection.setRequestProperty ("Referer", Referer);
-        httpURLConnection.setRequestProperty ("Accept-Language", "zh-cn");
-        httpURLConnection.setRequestProperty ("Cookie", CookieEx);
-        httpURLConnection.setRequestProperty ("Content-Type", "application/x-www-form-urlencoded");
+
+        for (Map.Entry<String, String> vo : RequestHeader.entrySet ()) {
+            httpURLConnection.setRequestProperty (vo.getKey (), vo.getValue ());
+        }
         int response = httpURLConnection.getResponseCode ();            //获得服务器的响应码
         if (response == HttpURLConnection.HTTP_OK) {
             InputStream inptStream = httpURLConnection.getInputStream ();

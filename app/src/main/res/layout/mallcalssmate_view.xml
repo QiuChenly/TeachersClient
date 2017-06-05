@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="181dp"
+        android:layout_height="match_parent"
+        android:id="@+id/m_LinearLayout_mAllClassMateView"
+        android:background="@mipmap/background"
+        android:gravity="bottom"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="62sp"
+            android:background="@mipmap/group_login_background"
+            android:gravity="bottom"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/m_TextView_mAllClassMate_studentName"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="学生姓名" />
+            <TextView
+                android:id="@+id/m_TextView_mAllClassMate_studentId"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="学生学号" />
+            <TextView
+                android:id="@+id/m_TextView_mAllClassMate_studentMobileNum"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="学生手机号" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
