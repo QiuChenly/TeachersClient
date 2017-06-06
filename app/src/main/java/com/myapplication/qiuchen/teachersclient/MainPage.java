@@ -3,9 +3,12 @@ package com.myapplication.qiuchen.teachersclient;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,12 +40,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import MuYuanTeacher.HttpUntils;
+import MuYuanTeacher.HttpUtils;
 import MuYuanTeacher.aolanTeacherSystem;
 import MuYuanTeacher.logininfo;
 import MuYuanTeacher.mLoginsData;
@@ -130,6 +135,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             }
         }
     }
+
     class mAllClassAdapter extends RecyclerView.Adapter<mAllClassAdapter.MyViewHolder> {
 
         private List<studentInfoClass> item;
@@ -147,28 +153,62 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
 
         @Override
-        public void onBindViewHolder(final MyViewHolder holder, int position) {
-            ViewGroup.LayoutParams params =  holder.itemView.getLayoutParams();//得到item的LayoutParams布局参数
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();//得到item的LayoutParams布局参数
             params.height = logininfo.getRandom();//把随机的高度赋予itemView布局
             holder.itemView.setLayoutParams(params);//把params设置给itemView布局
             final studentInfoClass stu = item.get(position);
             holder.m_TextView_mAllClassMate_studentId.setText(stu.studentId);
             holder.m_TextView_mAllClassMate_studentMobileNum.setText(stu.studentMobileNumber);
             holder.m_TextView_mAllClassMate_studentName.setText(stu.studentName);
-            final Handler h=new Handler(){
+            holder.m_TextView_mAllClassMate_studentNo.setText(String.valueOf(position + 1));
+            final Handler h = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
-                    Bitmap b=msg.getData().getParcelable("image");
-                    holder.m_LinearLayout_mAllClassMateView.setBackground(new BitmapDrawable(b));
+                    Bitmap b = msg.getData().getParcelable("image");
+//                    BitmapDrawable drawable = new BitmapDrawable(b);
+//                    float imageWidth = b.getWidth();
+//                    float imageHeight = b.getHeight();
+//                    float ViewWidth = holder.m_LinearLayout_mAllClassMateView.getWidth();
+//                    float ViewHeight = holder.m_LinearLayout_mAllClassMateView.getHeight();
+
+//                    源像素
+//                    567|390
+//                    实际大小
+//                    543 | 917
+//                    543 | 948
+//                    543 | 1008
+//                    543 | 1004
+                    holder.m_LinearLayout_mAllClassMateView.setImageBitmap(b);
                 }
             };
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
-                    Bitmap b=logininfo.aolanClassMate.getThisStudentCardIDPic("2015",stu.studentCardId);
-                    Bundle s=new Bundle();
-                    s.putParcelable("image",b);
-                    Message msg =new Message();
+                    int a = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate)).getSelectedItemPosition();
+                    int b = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS)).getSelectedItemPosition();
+                    String[] str = logininfo.classMate_CLASS.get(b).split("\\(");
+                    /**
+                     * 考虑性能,降低服务器压力,只需要初始化一次
+                     */
+                    if ((item.get(position)).Student_rxsj == "") {
+                        try {
+                            String rxsj = logininfo.aolanClassMate.getThisStudentRxsj(logininfo.classMate.get(a).split("\\(")[0], str[0], str[1].split("\\|")[1], holder.m_TextView_mAllClassMate_studentId.getText().toString());
+                            (item.get(position)).Student_rxsj = rxsj;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    /**
+                     * 缓存图像以便后面调用,降低服务器压力
+                     */
+                    if (stu.me == null) {
+                        stu.me = logininfo.aolanClassMate.getThisStudentCardIDPic((item.get(position)).Student_rxsj, stu.studentCardId);
+                    }
+                    Bundle s = new Bundle();
+                    s.putParcelable("image", stu.me);
+                    Message msg = new Message();
                     msg.setData(s);
                     h.sendMessage(msg);
                 }
@@ -184,14 +224,16 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             TextView m_TextView_mAllClassMate_studentName;
             TextView m_TextView_mAllClassMate_studentId;
             TextView m_TextView_mAllClassMate_studentMobileNum;
-            LinearLayout m_LinearLayout_mAllClassMateView;
+            TextView m_TextView_mAllClassMate_studentNo;
+            ImageView m_LinearLayout_mAllClassMateView;
 
             public MyViewHolder(View view) {
                 super(view);
+                m_TextView_mAllClassMate_studentNo = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentNo);
                 m_TextView_mAllClassMate_studentName = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentName);
                 m_TextView_mAllClassMate_studentId = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentId);
                 m_TextView_mAllClassMate_studentMobileNum = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentMobileNum);
-                m_LinearLayout_mAllClassMateView = (LinearLayout) view.findViewById(R.id.m_LinearLayout_mAllClassMateView);
+                m_LinearLayout_mAllClassMateView = (ImageView) view.findViewById(R.id.m_LinearLayout_mAllClassMateView);
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -201,6 +243,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             }
         }
     }
+
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         private int spanCount;
@@ -246,7 +289,6 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //如果需要透明导航栏，请加入标记
-
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
 
@@ -406,18 +448,18 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 //                        String str=logininfo.classMate.get(position);
                         //TODO:以后备用方法
 
-                        final Handler classMate=new Handler(){
+                        final Handler classMate = new Handler() {
                             @Override
                             public void handleMessage(Message msg) {
                                 if (logininfo.studentInfo == null) {
-                                    logininfo.studentInfo= new ArrayList<studentInfoClass>();
+                                    logininfo.studentInfo = new ArrayList<studentInfoClass>();
                                 }
                                 mAllClassAdapter mallclass = new mAllClassAdapter();
                                 mallclass.SetAdapterListData(logininfo.studentInfo);
                                 RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.m_RecyclerView_mAllClassmate);
                                 mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));//这里用线性显示 类似于listview
                                 mRecyclerView.setHasFixedSize(true);
-                                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2,10,true));
+                                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 10, true));
                                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                                 mRecyclerView.setAdapter(mallclass);
                             }
@@ -608,7 +650,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                                             .get("BanJi"), logininfo.mlogininfo.LeavesPerson.get(position).get("XueHao"), logininfo.mlogininfo.LeavesPerson.get(position).get("RequestTime"));
                                     logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl_Bitmap = null;
                                     if (logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl.length() > 0) {
-                                        logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl_Bitmap = HttpUntils.getImageBitmap(logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl);
+                                        logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl_Bitmap = HttpUtils.getImageBitmap(logininfo.mlogininfo.Holidays_StudentInfo.m_imageurl);
                                     }
                                     hand.sendEmptyMessage(0);
                                 } catch (IOException e) {

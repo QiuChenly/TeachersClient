@@ -91,15 +91,15 @@ public class aolanTeacherSystem {
     public int mLoginSystem (String UserID, String Pass) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/login.aspx";
         String D = md5 (Pass.toUpperCase ()).toUpperCase ();
-        String data = HttpUntils.Get(url, "");
+        String data = HttpUtils.Get(url, "");
         UpdataViewState (data);
         data = "__VIEWSTATE=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" + logininfo._viewStategenerator + "&userbh=" + UserID + "&pass=" + D + "&cw=&xzbz=1";
-        ResponseData res = HttpUntils.POST(new URL(url), data, HttpUntils.Cookie, "application/x-www-form-urlencoded");
+        ResponseData res = HttpUtils.POST(new URL(url), data, HttpUtils.Cookie, "application/x-www-form-urlencoded");
         if (res.ResponseCode != 200) {
-            String ress = HttpUntils.Get("http://xgsl.jsahvc.edu.cn" + res.RedirctUrl, HttpUntils.Cookie);
+            String ress = HttpUtils.Get("http://xgsl.jsahvc.edu.cn" + res.RedirctUrl, HttpUtils.Cookie);
             if (ress.contains ("系统要求:显示分辨率为")) {
                 url = "http://xgsl.jsahvc.edu.cn/top_1.aspx";
-                ress = HttpUntils.Get(url, HttpUntils.Cookie);
+                ress = HttpUtils.Get(url, HttpUtils.Cookie);
                 logininfo.mlogininfo.mName = GetSubText (ress, "欢迎你:", "\r", 0).trim ();
                 return 1;
             }
@@ -113,7 +113,7 @@ public class aolanTeacherSystem {
 
     public void findOnlinePersonCount () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/online.aspx?xzbz=f";
-        logininfo.ErrorMessage = HttpUntils.Get(url, HttpUntils.Cookie, "http://xgsl.jsahvc.edu.cn/top_1.aspx");
+        logininfo.ErrorMessage = HttpUtils.Get(url, HttpUtils.Cookie, "http://xgsl.jsahvc.edu.cn/top_1.aspx");
         UpdataViewState (logininfo.ErrorMessage);
         logininfo.mlogininfo.m_YXDM = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"yxdm\" value=\"", "\"", 0);
         logininfo.mlogininfo.m_bh = GetSubText (logininfo.ErrorMessage, "type=\"hidden\" id=\"bh\" value=\"", "\"", 0);
@@ -124,7 +124,7 @@ public class aolanTeacherSystem {
 
     public void getAllLeaveState () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/r_2_5_1.aspx";
-        String data = HttpUntils.Get(url, HttpUntils.Cookie);
+        String data = HttpUtils.Get(url, HttpUtils.Cookie);
         UpdataViewState (data);
         Map<String, String> map = new HashMap<> ();
         map.put ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
@@ -135,13 +135,13 @@ public class aolanTeacherSystem {
         map.put ("Referer", "http://xgsl.jsahvc.edu.cn/student/r_2_5_1.aspx");
         map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
         map.put ("Host", "xgsl.jsahvc.edu.cn");
-        map.put ("Cookie", HttpUntils.Cookie);
+        map.put ("Cookie", HttpUtils.Cookie);
 
         data = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" + logininfo._viewStategenerator +
                 "&ym=1&xzbz=0&ptj=&km=&ar1_gs=0&dc_bq=&N_HT=&N_DF=&N_DF2=&ppage=0&fy=&xzclk1=xdm" +
                 "&xzclk2=bjhm&xzclk3=xh&xzclk4=xm&xzgjc=xh&ii_z=0&ii_d=&dy_bz=1&dy_hz=&hei=&dc_f1=&dc_f2=&n_ni=&n_nim=&n_hj=&n_hjz=&n_hjzdx=&pgs=40&phs=25&allbz=&xq=&rzbz=1&czsj=&gjz=&cw=&mbbz" +
                 "=&xfl_y=";
-        ResponseData res = HttpUntils.POST (url, data, map, true);
+        ResponseData res = HttpUtils.POST (url, data, map, true);
         if (res.ResponseCode == 200) {
             UpdataViewState (res.ResponseText);
             //获取数据并封装
@@ -174,7 +174,7 @@ public class aolanTeacherSystem {
      */
     public void QueryStudentLeaveInfomation (String DepartmentName, String ClassName, String StudentID, String RequestTime) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/r_3_1_sy.aspx";
-        String Data = HttpUntils.Get(url, HttpUntils.Cookie);
+        String Data = HttpUtils.Get(url, HttpUtils.Cookie);
         UpdataViewState (Data);
         Data = "__EVENTTARGET=&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE" + "=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" + logininfo._viewStategenerator + "&x=" + EncodeStr (DepartmentName) +
                 "&bjhm=" + EncodeStr (ClassName) + "&gjc=xh&gjc_z=" + StudentID + "&xm=&xdm=&iud2=&pzd=xdm%2Cbjhm%2Cxh%2Cxm&xzbz=1&psrc=&pxj=&pcf=&rxsj=&km_lx=sy_&xh=" + StudentID +
@@ -188,8 +188,8 @@ public class aolanTeacherSystem {
         map.put ("Referer", "http://xgsl.jsahvc.edu.cn/student/r_3_1_sy.aspx");
         map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
         map.put ("Host", "xgsl.jsahvc.edu.cn");
-        map.put ("Cookie", HttpUntils.Cookie);
-        ResponseData res = HttpUntils.POST (url, Data, map, true);
+        map.put ("Cookie", HttpUtils.Cookie);
+        ResponseData res = HttpUtils.POST (url, Data, map, true);
         logininfo.mlogininfo.Holidays_StudentInfo = new ObjectPersonInfo ();
         logininfo.mlogininfo.Holidays_StudentInfo.m_ClassName = GetSubText (res.ResponseText, "<input name=\"bjhm\" type=\"text\" value=\"", "\"", 0);
         logininfo.mlogininfo.Holidays_StudentInfo.m_czsj = GetSubText (res.ResponseText, "<input name=\"czsj\" type=\"hidden\" id=\"czsj\" value=\"", "\"", 0);
@@ -202,7 +202,7 @@ public class aolanTeacherSystem {
 
         //同步获取这位同学的数据
         url = "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_st_xsqj.aspx";
-        Data = HttpUntils.Get(url, HttpUntils.Cookie);
+        Data = HttpUtils.Get(url, HttpUtils.Cookie);
         UpdataViewState (Data);
         Data = "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__EVENTTARGET\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" +
                 "Content-Disposition: form-data; name=\"__EVENTARGUMENT\"\n" + "\n" + "\n" + "------WebKitFormBoundaryB3g3OGJ1RGcsa6kZ\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n"
@@ -254,8 +254,8 @@ public class aolanTeacherSystem {
         map1.put ("Origin", "http://xgsl.jsahvc.edu.cn");
         map1.put ("Referer", "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_st_xsqj.aspx");
         map1.put ("Upgrade-Insecure-Requests", "1");
-        map1.put ("Cookie", HttpUntils.Cookie);
-        ResponseData responseData = HttpUntils.POST (url, Data, map1, true);
+        map1.put ("Cookie", HttpUtils.Cookie);
+        ResponseData responseData = HttpUtils.POST (url, Data, map1, true);
         UpdataViewState (responseData.ResponseText);
         //请假时间获取
 
@@ -362,9 +362,9 @@ public class aolanTeacherSystem {
         map.put ("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryjavwnv5fkvu2i58q");
         map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
         map.put ("Upgrade-Insecure-Requests", "1");
-        map.put ("Cookie", HttpUntils.Cookie);
+        map.put ("Cookie", HttpUtils.Cookie);
         map.put ("Referer", "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_st_xsqj.aspx");
-        ResponseData responseData = HttpUntils.POST (url, Data, map, true);
+        ResponseData responseData = HttpUtils.POST (url, Data, map, true);
         String temp = responseData.ResponseText;
         if (temp.contains ("成功")) {
             return 1;
@@ -377,15 +377,15 @@ public class aolanTeacherSystem {
 
     public void initOpinionSelection () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/xzdm.aspx";
-        String Data = HttpUntils.Get(url, HttpUntils.Cookie);
+        String Data = HttpUtils.Get(url, HttpUtils.Cookie);
         UpdataViewState (Data);
         Data = "__VIEWSTATE=" + EncodeStr (logininfo._viewstate) + "&__VIEWSTATEGENERATOR=" +logininfo. _viewStategenerator + "&mh=&tj=&pdm=&pmc=fdyspyj&pdm2=&pmc2=&pjxjdm=&pjxjdm2=&pval=&plx=&pkm=spyjdm&pzd=&xzbz=0"
                 + "&pxdm=&ipbz=1&cwbz=";
 
         Map<String, String> map = new HashMap<> ();
-        map.put ("Cookie", HttpUntils.Cookie);
+        map.put ("Cookie", HttpUtils.Cookie);
         map.put ("Content-Type", "application/x-www-form-urlencoded");
-        ResponseData res = HttpUntils.POST (url, Data, map, true);
+        ResponseData res = HttpUtils.POST (url, Data, map, true);
         Pattern p = Pattern.compile ("<span id=\"MyDataGrid__.*?\">(.*?)</span>[\\s]*</font></td><td nowrap=\"nowrap\"><font color=\"Black\">[\\s]*<span id=\"MyDataGrid__.*?\">(.*?)[\\s]*</span>");
         Matcher m = p.matcher (res.ResponseText);
         logininfo.mlogininfo.Holidays_StudentInfo.OpinionSelection = new ArrayList<> ();
@@ -397,7 +397,7 @@ public class aolanTeacherSystem {
 
     public void NewsGet () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_gg.aspx";
-        String data = HttpUntils.Get(url, HttpUntils.Cookie);
+        String data = HttpUtils.Get(url, HttpUtils.Cookie);
         //UpdataViewState (data);
         logininfo.mlogininfo.News = new ArrayList<> ();
         Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
@@ -411,7 +411,7 @@ public class aolanTeacherSystem {
 
     public void NewsGet_WorkPlan () throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_jh.aspx";
-        String data = HttpUntils.Get(url, HttpUntils.Cookie);
+        String data = HttpUtils.Get(url, HttpUtils.Cookie);
         //UpdataViewState (data);
         Pattern p = Pattern.compile ("xzdm\\('(.*?)','(.*?)','(.*?)','(.*?)','(.*?)','(.*?)'\\)\">.*?</a>[\\s]*</td>[\\s]*<td width=\"15%\" nowrap>[\\s]*(.*?)[\\s]*\\n");
         Matcher m = p.matcher (data);
@@ -437,7 +437,7 @@ public class aolanTeacherSystem {
 
     public void getHtmlCode (String km,String title, String ReportTime, String Id) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/message/message_xs.aspx";
-        String Data = HttpUntils.Get(url, HttpUntils.Cookie);
+        String Data = HttpUtils.Get(url, HttpUtils.Cookie);
         UpdataViewState (Data);
          Data = "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: form-data; name=\"__VIEWSTATE\"\n" + "\n" +logininfo. _viewstate + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" +
                 "Content-Disposition: form-data; name=\"__VIEWSTATEGENERATOR\"\n" + "\n" + logininfo._viewStategenerator + "\n" + "------WebKitFormBoundarywPuXoV48UDZByzWT\n" + "Content-Disposition: " +
@@ -467,11 +467,11 @@ public class aolanTeacherSystem {
         map.put ("Cache-Control", "max-age=0");
         map.put ("Connection", "keep-alive");
         map.put ("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundarywPuXoV48UDZByzWT");
-        map.put ("Cookie", HttpUntils.Cookie);
+        map.put ("Cookie", HttpUtils.Cookie);
         map.put ("Host", "xgsl.jsahvc.edu.cn");
         map.put ("Origin", "http://xgsl.jsahvc.edu.cn");
         map.put ("Referer", "http://xgsl.jsahvc.edu.cn/message/message_xs.aspx");
-        ResponseData responseData = HttpUntils.POST (url, Data, map, true);
+        ResponseData responseData = HttpUtils.POST (url, Data, map, true);
         logininfo.ErrorMessage=responseData.ResponseText;
     }
 }
