@@ -140,7 +140,6 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
         private List<studentInfoClass> item;
 
-
         public void SetAdapterListData(List<studentInfoClass> list) {
             item = list;
         }
@@ -191,10 +190,9 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                     /**
                      * 考虑性能,降低服务器压力,只需要初始化一次
                      */
-                    if ((item.get(position)).Student_rxsj == "") {
+                    if (stu.Student_rxsj == "") {
                         try {
-                            String rxsj = logininfo.aolanClassMate.getThisStudentRxsj(logininfo.classMate.get(a).split("\\(")[0], str[0], str[1].split("\\|")[1], holder.m_TextView_mAllClassMate_studentId.getText().toString());
-                            (item.get(position)).Student_rxsj = rxsj;
+                            stu.Student_rxsj = logininfo.aolanClassMate.getThisStudentRxsj(logininfo.classMate.get(a).split("\\(")[0], str[0], str[1].split("\\|")[1], holder.m_TextView_mAllClassMate_studentId.getText().toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -220,6 +218,9 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             return item.size();
         }
 
+        /**
+         * 内部适配类,分别对应不同的Recycler控件
+         */
         class MyViewHolder extends RecyclerView.ViewHolder {
             TextView m_TextView_mAllClassMate_studentName;
             TextView m_TextView_mAllClassMate_studentId;
