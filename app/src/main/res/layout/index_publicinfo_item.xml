@@ -7,6 +7,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+
+        android:background="@drawable/medittextbackground"
         android:orientation="horizontal">
 
         <TextView
@@ -36,11 +41,13 @@
                 android:textColor="#307ac4"
                 android:gravity="right"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
                 android:text="Author"/>
 
             <TextView
                 android:id="@+id/News_ReportTime"
                 android:layout_width="match_parent"
+                android:layout_marginRight="5dp"
                 android:gravity="right"
                 android:layout_height="wrap_content"
                 android:text="Author"/>

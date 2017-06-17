@@ -103,6 +103,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
+
+        (findViewById(R.id.Exit_button)).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.exit(0);
+            }
+        });
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.Login_ProgressBar);
 
@@ -156,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             //showProgress(true);
             mProgressView.setVisibility(View.VISIBLE);
-            findViewById(R.id.Login_button).setVisibility(View.GONE);
+            findViewById(R.id.mConllerButtonGroup).setVisibility(View.GONE);
 
             final Handler handler = new Handler() {
                 @Override
@@ -164,7 +171,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     super.handleMessage(msg);
                     if (logininfo.ErrorMsgCode != 1) {
                         mProgressView.setVisibility(View.GONE);
-                        findViewById(R.id.Login_button).setVisibility(View.VISIBLE);
+                        findViewById(R.id.mConllerButtonGroup).setVisibility(View.VISIBLE);
                     }
                     switch (logininfo.ErrorMsgCode) {
                         case 1:

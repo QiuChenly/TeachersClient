@@ -162,16 +162,17 @@
 
         <Button
             android:id="@+id/m_LeavesView_Button_AllowRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
             android:layout_marginTop="10sp"
+            android:background="@drawable/mbuttonradius"
             android:text="确   认"/>
 
         <ProgressBar
             android:id="@+id/m_LeavesView_ProgressBar_AllowRequest"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
             android:visibility="invisible"/>
     </LinearLayout>
