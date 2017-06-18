@@ -42,7 +42,8 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/mCallStudent"
         android:layout_width="wrap_content"
-        app:layout_anchorGravity="bottom|center_horizontal"
+        app:layout_anchorGravity="bottom|left"
+        android:layout_marginLeft="10dp"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/app_bar"
         app:srcCompat="@android:drawable/ic_menu_call" />
@@ -56,5 +57,6 @@
         app:layout_anchor="@id/app_bar"
         app:srcCompat="@android:drawable/ic_menu_send"
         tools:ignore="RtlHardcoded" />
+
 
 </android.support.design.widget.CoordinatorLayout>

@@ -138,14 +138,12 @@ public class aolanSystemClassMate extends aolanTeacherSystem {
 
     /**
      * 获取学生详细信息
-     * @param xdm 系代码
-     * @param bjhm 班级名称 15数控技术1
-     * @param xh 个人学号
-     * @param xm 个人姓名
+     *
      * @return 返回查询到的数据
      * @throws IOException IO抛出异常  一般不会抛异常
+     * @stu 传入数据
      */
-    public String getThisStudentMoreInfomation(String xdm, String bjhm, String xh, String xm) throws IOException {
+    public studentInfoClass getThisStudentMoreInfomation(studentInfoClass stu) throws IOException {
         String url = "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_sy_jbgr.aspx";
         Map<String, String> m = new HashMap<>();
         m.put("Connection", "keep-alive");
@@ -156,22 +154,104 @@ public class aolanSystemClassMate extends aolanTeacherSystem {
         m.put("Cookie", HttpUtils.Cookie);
         String re = HttpUtils.Get(url, "UTF-8", m);
         UpdataViewState(re);
-
         String data = "__EVENTTARGET=" +
                 "&__EVENTARGUMENT=" +
-                "&__VIEWSTATE=" +EncodeStr(logininfo._viewstate)+
-                "&__VIEWSTATEGENERATOR=" +logininfo._viewStategenerator+
+                "&__VIEWSTATE=" + EncodeStr(logininfo._viewstate) +
+                "&__VIEWSTATEGENERATOR=" + logininfo._viewStategenerator +
                 "&xb=&xbdm=&x2_xbdm=&zy=&zydm=&x2_zydm=&sfzhm=&x2_sfzhm=&cell=&x2_cell=&yhzh=&x2_yhzh=&sshm=&x2_sshm=&cwh=&x2_cwh=&qq=&x2_qq=&email=&x2_email=&mz=&mzdm=&x2_mzdm=&csrq=&x2_csrq=&zzmm=&zzmmdm=&x2_zzmmdm=&zzmmsj=&x2_zzmmsj=&xl=&xldm=&x2_xldm=&rxsj=&x2_rxsj=&syszd=&syszddm=&x2_syszddm=&xz=&x2_xz=&xxsj=&x2_xxsj=&jtdz=&x2_jtdz=&jtdh=&x2_jtdh=&jtlxr=&x2_jtlxr=&jtyzbm=&x2_jtyzbm=&xmpy=&x2_xmpy=&ksh=&x2_ksh=&byzx=&x2_byzx=&zxyzbm=&x2_zxyzbm=&cym=&x2_cym=&jg=&x2_jg=&sbkh=&x2_sbkh=&hkxz=&hkxzdm=&x2_hkxzdm=&ptbz=&x2_ptbz=&ck_xsqr=&x2_xsqr=&km=sy_jbgr&pzd=xbdm%2Czydm%2Csfzhm%2Ccell%2Cyhzh%2Csshm%2Ccwh%2Cqq%2Cemail%2Cmzdm%2Ccsrq%2Czzmmdm%2Czzmmsj%2Cxldm%2Crxsj%2Csyszddm%2Cxz%2Cxxsj%2Cjtdz%2Cjtdh%2Cjtlxr%2Cjtyzbm%2Cxmpy%2Cksh%2Cbyzx%2Czxyzbm%2Ccym%2Cjg%2Csbkh%2Chkxzdm%2Cptbz%2Cxsqr&pzd_c=xsqr%2C&pzd_lock=xh%2Cxm%2Cxbdm%2Czydm%2Crxsj%2Cksh%2Csfzhm%2Ccsrq%2Csshm%2C&pzd_lock2=" +
-                "&xdm=" + xdm +
-                "&bjhm=" + EncodeStr(bjhm) +
-                "&xh=" + xh +
-                "&xm=" + EncodeStr(xm) +
+                "&xdm=" + stu.Student_xdm +
+                "&bjhm=" + EncodeStr(stu.Student_bjhm_Str) +
+                "&xh=" + stu.studentId +
+                "&xm=" + EncodeStr(stu.studentName) +
                 "&qx_i=0&qx_u=1&qx_d=0&databcxs=&databcdel=&xzbz=1&pkey=&pkey4=&xs_bj=&bdbz=&cw=&fjmf=&sb=&pzd_xg=&stuop=1&mc=&tkey=&tkey4=&zjdy=&pczsj=&xp_pmc=&xp_pval=&xp_plx=&xp_pkm=&xp_pzd=&xp_pjxjdm=&xp_ipbz=&xp_pjxjdm2=";
         ResponseData res = HttpUtils.POST(new URL(url), data, HttpUtils.Cookie, "application/x-www-form-urlencoded");
-        
-
-
-        return "";
+        stu.Student_ssbh = GetSubText(res.ResponseText, "<input name=\"sshm\" type=\"text\" id=\"sshm\" size=\"20\" class=\"TD1\" maxlength=\"20\" Onchange=\"tchang1(&#39;sshm&#39;)\" onkeydown=\"onkeydown1(&#39;yhzh&#39;,&#39;sshm&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_ssbh.length()>100){
+            stu.Student_ssbh="";
+        }
+        stu.Student_cwh = GetSubText(res.ResponseText, "<input name=\"cwh\" type=\"text\" id=\"cwh\" size=\"2\" class=\"TD1\" maxlength=\"2\" onkeydown=\"onkeydown1(&#39;sshm&#39;,&#39;cwh&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_cwh.length()>100){
+            stu.Student_cwh="";
+        }
+        stu.Student_QQ = GetSubText(res.ResponseText, "<input name=\"qq\" type=\"text\" id=\"qq\" size=\"20\" class=\"TD1\" maxlength=\"20\" onkeydown=\"onkeydown1(&#39;cwh&#39;,&#39;qq&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_QQ.length()>100){
+            stu.Student_QQ="";
+        }
+        stu.Student_Email = GetSubText(res.ResponseText, "<input name=\"email\" type=\"text\" id=\"email\" size=\"30\" class=\"TD1\" maxlength=\"30\" onkeydown=\"onkeydown1(&#39;qq&#39;,&#39;email&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_Email.length()>100){
+            stu.Student_Email="";
+        }
+        stu.Student_MZ = GetSubText(res.ResponseText, "<input name=\"mz\" type=\"text\" id=\"mz\" size=\"20\" class=\"TD1\" maxlength=\"20\" Onchange=\"tchang1(&#39;mz&#39;)\" onkeydown=\"onkeydown1(&#39;email&#39;,&#39;mzdm&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_MZ.length()>100){
+            stu.Student_MZ="";
+        }
+        stu.Student_CSRQ = GetSubText(res.ResponseText, "<input name=\"csrq\" type=\"text\" id=\"csrq\" size=\"8\" class=\"TD1\" maxlength=\"8\" onkeydown=\"onkeydown1(&#39;mzdm&#39;,&#39;csrq&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_CSRQ.length()>100){
+            stu.Student_CSRQ="";
+        }
+        stu.Student_ZZMM = GetSubText(res.ResponseText, "<input name=\"zzmm\" type=\"text\" id=\"zzmm\" size=\"20\" class=\"TD1\" maxlength=\"20\" Onchange=\"tchang1(&#39;zzmm&#39;)\" onkeydown=\"onkeydown1(&#39;csrq&#39;,&#39;zzmmdm&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_ZZMM.length()>100){
+            stu.Student_ZZMM="";
+        }
+        stu.Student_ZZMMJRSJ = GetSubText(res.ResponseText, "<input name=\"zzmmsj\" type=\"text\" id=\"zzmmsj\" title=\"标准样式:20090910 可以只到月,不要写年月字样\" size=\"8\" class=\"TD1\" maxlength=\"8\" onkeydown=\"onkeydown1(&#39;zzmmdm&#39;,&#39;zzmmsj&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_ZZMMJRSJ.length()>100){
+            stu.Student_ZZMMJRSJ="";
+        }
+        stu.Student_SYDQ = GetSubText(res.ResponseText, "<input name=\"syszd\" type=\"text\" id=\"syszd\" size=\"30\" class=\"TD1\" maxlength=\"36\" Onchange=\"tchang1(&#39;syszd&#39;)\" onkeydown=\"onkeydown1(&#39;rxsj&#39;,&#39;syszddm&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_SYDQ.length()>100){
+            stu.Student_SYDQ="";
+        }
+        stu.Student_XZ = GetSubText(res.ResponseText, "<input name=\"xz\" type=\"text\" id=\"xz\" size=\"3\" class=\"TD1\" maxlength=\"3\" onkeydown=\"onkeydown1(&#39;syszddm&#39;,&#39;xz&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_XZ.length()>100){
+            stu.Student_XZ="";
+        }
+        stu.Student_JTDZ = GetSubText(res.ResponseText, "<input name=\"jtdz\" type=\"text\" id=\"jtdz\" size=\"30\" class=\"TD1\" maxlength=\"200\" onkeydown=\"onkeydown1(&#39;xxsj&#39;,&#39;jtdz&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_JTDZ.length()>100){
+            stu.Student_JTDZ="";
+        }
+        stu.Student_JTDH = GetSubText(res.ResponseText, "<input name=\"jtdh\" type=\"text\" id=\"jtdh\" size=\"30\" class=\"TD1\" maxlength=\"30\" onkeydown=\"onkeydown1(&#39;jtdz&#39;,&#39;jtdh&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_JTDH.length()>100){
+            stu.Student_JTDH="";
+        }
+        stu.Student_LXR = GetSubText(res.ResponseText, "<input name=\"jtlxr\" type=\"text\" id=\"jtlxr\" size=\"24\" class=\"TD1\" maxlength=\"24\" onkeydown=\"onkeydown1(&#39;jtdh&#39;,&#39;jtlxr&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_LXR.length()>100){
+            stu.Student_LXR="";
+        }
+        stu.Student_JTYB = GetSubText(res.ResponseText, "<input name=\"jtyzbm\" type=\"text\" id=\"jtyzbm\" size=\"6\" class=\"TD1\" maxlength=\"6\" onkeydown=\"onkeydown1(&#39;jtlxr&#39;,&#39;jtyzbm&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_JTYB.length()>100){
+            stu.Student_JTYB="";
+        }
+        stu.Student_XMPY = GetSubText(res.ResponseText, "<input name=\"xmpy\" type=\"text\" id=\"xmpy\" size=\"20\" class=\"TD1\" maxlength=\"20\" onkeydown=\"onkeydown1(&#39;jtyzbm&#39;,&#39;xmpy&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_XMPY.length()>100){
+            stu.Student_XMPY="";
+        }
+        stu.Student_KSH = GetSubText(res.ResponseText, "<input name=\"ksh\" type=\"text\" id=\"ksh\" size=\"16\" class=\"TD1\" maxlength=\"16\" onkeydown=\"onkeydown1(&#39;xmpy&#39;,&#39;ksh&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_KSH.length()>100){
+            stu.Student_KSH="";
+        }
+        stu.Student_BYZX = GetSubText(res.ResponseText, "<input name=\"byzx\" type=\"text\" id=\"byzx\" size=\"30\" class=\"TD1\" maxlength=\"100\" onkeydown=\"onkeydown1(&#39;ksh&#39;,&#39;byzx&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_BYZX.length()>100){
+            stu.Student_BYZX="";
+        }
+        stu.Student_CYM = GetSubText(res.ResponseText, "<input name=\"cym\" type=\"text\" id=\"cym\" size=\"24\" class=\"TD1\" maxlength=\"24\" onkeydown=\"onkeydown1(&#39;zxyzbm&#39;,&#39;cym&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_CYM.length()>100){
+            stu.Student_CYM="";
+        }
+        stu.Student_JG = GetSubText(res.ResponseText, "<input name=\"jg\" type=\"text\" id=\"jg\" title=\"省份+市县（例如：江苏东台）\" size=\"30\" class=\"TD1\" maxlength=\"50\" onkeydown=\"onkeydown1(&#39;cym&#39;,&#39;jg&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_JG.length()>100){
+            stu.Student_JG="";
+        }
+        stu.Student_HKXZ = GetSubText(res.ResponseText, "<input name=\"hkxz\" type=\"text\" id=\"hkxz\" size=\"20\" class=\"TD1\" maxlength=\"20\" Onchange=\"tchang1(&#39;hkxz&#39;)\" onkeydown=\"onkeydown1(&#39;sbkh&#39;,&#39;hkxzdm&#39;,event)\" onfocus=\"this.select()\" value=\"", "\" />", 0);
+        if(stu.Student_HKXZ.length()>100){
+            stu.Student_HKXZ="";
+        }
+        stu.Student_Confirm = GetSubText(res.ResponseText, "<input name=\"xsqr\" type=\"checkbox\" id=\"xsqr\" class=\"ck\" value=\"", "\" checked=", 0);
+        if (stu.Student_Confirm.equals("ON")) {
+            stu.Student_Confirm = "已确认";
+        } else {
+            stu.Student_Confirm = "未确认";
+        }
+        return stu;
     }
 
 }

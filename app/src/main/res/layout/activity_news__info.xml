@@ -1,16 +1,25 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@mipmap/background"
-              android:gravity="center_horizontal"
-              android:orientation="vertical"
-              android:paddingTop="30sp"
-              tools:context="com.myapplication.qiuchen.teachersclient.LoginActivity">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.myapplication.qiuchen.teachersclient.LoginActivity">
+
+    <ImageView
+        android:id="@+id/NewsBackGround"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@mipmap/background" />
 
     <WebView
         android:id="@+id/mWebViews"
+        android:layout_marginTop="25dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+/>
 
-    </LinearLayout>
+
+</FrameLayout>

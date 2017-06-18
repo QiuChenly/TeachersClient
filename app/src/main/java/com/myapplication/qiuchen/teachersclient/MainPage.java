@@ -14,6 +14,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -52,8 +53,9 @@ import MuYuanTeacher.studentInfoClass;
 public class MainPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     long BackTime = 0;
     Toolbar toolbar = null;
-
+    Boolean isRefreshData = false;
     private static final String TAG = "首页";
+
 
     /*
      * 新闻数据抓取适配类
@@ -195,8 +197,12 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                       缓存图像以便后面调用,降低服务器压力
                      */
                     if (stu.me == null) {
-                        stu.me = logininfo.aolanClassMate.getThisStudentCardIDPic((logininfo.studentInfo.get(position)).Student_rxsj, stu.studentCardId);
-                        logininfo.studentInfo.set(position, stu);
+                        stu.me = logininfo.aolanClassMate.getThisStudentCardIDPic(stu.Student_rxsj, stu.studentCardId);
+                        if (isRefreshData == false) {
+                            logininfo.studentInfo.set(position, stu);
+                        } else {
+                            return;
+                        }
                     }
                     Bundle s = new Bundle();
                     s.putParcelable("image", stu.me);
@@ -212,7 +218,8 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                         @Override
                         public void run() {
                             try {
-                                logininfo.aolanClassMate.getThisStudentMoreInfomation(stu.Student_xdm, stu.Student_bjhm_Str, stu.studentId, stu.studentName);
+                                logininfo.aolanClassMate.getThisStudentMoreInfomation(stu);
+                                logininfo.studentInfo.set(position, stu);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -269,6 +276,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         if (logininfo.MainBackground != null) {
             ImageView i = (ImageView) findViewById(R.id.HomePageBackGround);
             i.setImageBitmap(logininfo.MainBackground);
@@ -293,6 +301,8 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
         toolbar.setTitle("学院公告");
         SwitchViewHandler.sendMessage(BundleMessage(1));
+
+
     }
 
     @Override
@@ -405,12 +415,54 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             }
         }
     };
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public void initmClassMateView(LayoutInflater inflater) {
         LinearLayout i = (LinearLayout) inflater.inflate(R.layout.activity_mallclassmate, null).findViewById(R.id.m_View_mAllClassMate);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.m_ContentView);
         linearLayout.removeAllViews();
         linearLayout.addView(i);
+
+        final Handler SwipeRefreshLayoutHandle = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                mAllClassAdapter mallclass = new mAllClassAdapter();
+                RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.m_RecyclerView_mAllClassmate);
+                mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));//这里用线性显示 类似于listview
+                mRecyclerView.setHasFixedSize(false);
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                mRecyclerView.setAdapter(mallclass);
+                swipeRefreshLayout.setRefreshing(false);
+                isRefreshData=false;
+            }
+        };
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mSwipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isRefreshData=true;
+                logininfo.studentInfo = new ArrayList<>();
+                Spinner spin = (Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS);
+                final String[] s = logininfo.classMate_CLASS.get(spin.getSelectedItemPosition()).split("\\|");
+                final String count = logininfo.aolan.GetSubText(s[0], "(", ")", 0);
+                final String[] className = s[0].split("\\(");
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            logininfo.studentInfo = logininfo.aolanClassMate.getThisClassStudent(className[0], s[1], count);
+                        } catch (IOException e) {
+                            Log.d(TAG, "发现异常:来自MainActivity第453行: " + e.getMessage());
+                        }
+                        SwipeRefreshLayoutHandle.sendEmptyMessage(0);
+                    }
+                }.start();
+
+
+            }
+        });
+
+
         final Spinner mAllClass = (Spinner) findViewById(R.id.m_Spinner_AllClassMate);
 
         final Handler handler = new Handler() {
@@ -429,7 +481,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                             @Override
                             public void handleMessage(Message msg) {
                                 if (logininfo.studentInfo == null) {
-                                    logininfo.studentInfo = new ArrayList<studentInfoClass>();
+                                    logininfo.studentInfo = new ArrayList<>();
                                 }
                                 mAllClassAdapter mallclass = new mAllClassAdapter();
                                 RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.m_RecyclerView_mAllClassmate);

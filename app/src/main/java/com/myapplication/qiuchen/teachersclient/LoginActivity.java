@@ -51,33 +51,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             //如果需要透明导航栏，请加入标记
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
-       final Handler h=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                image.setImageBitmap (logininfo.MainBackground);
-            }
-        };
-
-        if( logininfo.MainBackground==null){
-            new Thread(){
-                @Override
-                public void run() {
-                    try {
-                        logininfo.MainBackground = HttpUtils.getBingImage();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-        }else{
-            h.sendEmptyMessage(0);
-        }
-
 
         // Set up the login form.
         mUsername = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
-        image=(ImageView)findViewById(R.id.MainBackGround);
+        image = (ImageView) findViewById(R.id.MainBackGround);
 
         logininfo.aolan = new aolanTeacherSystem();
         logininfo.aolanClassMate = new aolanSystemClassMate();
@@ -105,7 +83,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
         }
-
         //定义登录按钮的操作
         final Button login_button = (Button) findViewById(R.id.Login_button);
         login_button.setOnClickListener(new OnClickListener() {
@@ -125,10 +102,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.Login_ProgressBar);
 
 
+        final Handler h = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                image.setImageBitmap(logininfo.MainBackground);
+                if (user != "" && logininfo.LoginState == 0) {
+                    login_button.callOnClick();
+                }
+            }
+        };
 
-
-        if (user != "" && logininfo.LoginState == 0) {
-            login_button.callOnClick();
+        if (logininfo.MainBackground == null) {
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        logininfo.MainBackground = HttpUtils.getBingImage();
+                        h.sendEmptyMessage(0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+        } else {
+            h.sendEmptyMessage(0);
         }
     }
 

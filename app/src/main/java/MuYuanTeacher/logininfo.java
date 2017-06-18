@@ -31,7 +31,7 @@ public class logininfo {
     public static String _viewstate;
     public static String _viewStategenerator;
 
-    public static List<studentInfoClass> studentInfo=new ArrayList<studentInfoClass>();
+    public static List<studentInfoClass> studentInfo=new ArrayList<>();
 
     public static void PrintInfo(String info) {
         Log.d("QiuChen", info);
