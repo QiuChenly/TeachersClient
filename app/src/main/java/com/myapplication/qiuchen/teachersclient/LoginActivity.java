@@ -1,26 +1,17 @@
 package com.myapplication.qiuchen.teachersclient;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,15 +29,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import MuYuanTeacher.HttpUtils;
 import MuYuanTeacher.aolanSystemClassMate;
 import MuYuanTeacher.aolanTeacherSystem;
 import MuYuanTeacher.logininfo;
 
-import static android.Manifest.permission.READ_CONTACTS;
-
-/**
- * 这个界面模板是AS自带的
- */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     // UI references.
@@ -53,27 +41,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-        mUsername = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //如果需要透明导航栏，请加入标记
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
+       final Handler h=new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                image.setImageBitmap (logininfo.MainBackground);
+            }
+        };
+
+        if( logininfo.MainBackground==null){
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        logininfo.MainBackground = HttpUtils.getBingImage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+        }else{
+            h.sendEmptyMessage(0);
+        }
+
+
+        // Set up the login form.
+        mUsername = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        image=(ImageView)findViewById(R.id.MainBackGround);
 
         logininfo.aolan = new aolanTeacherSystem();
         logininfo.aolanClassMate = new aolanSystemClassMate();
         logininfo.aolan.aolanTeacherSystem(this);
         logininfo.Share = this.getSharedPreferences("QiuChenTeachersSet", MODE_PRIVATE);
         logininfo.edit = logininfo.Share.edit();
-        String user = logininfo.Share.getString("user", "");
+        final String user = logininfo.Share.getString("user", "");
         if (user != "") {
             mUsername.setText(user);
         }
@@ -96,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         //定义登录按钮的操作
-        Button login_button = (Button) findViewById(R.id.Login_button);
+        final Button login_button = (Button) findViewById(R.id.Login_button);
         login_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,6 +123,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.Login_ProgressBar);
+
+
 
 
         if (user != "" && logininfo.LoginState == 0) {

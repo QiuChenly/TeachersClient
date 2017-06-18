@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:background="@drawable/malphabackground"
+        android:background="@drawable/mclassbackground"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -50,9 +50,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5sp"
-                >
-
+                android:layout_margin="5sp">
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:id="@+id/m_RecyclerView_mAllClassmate"

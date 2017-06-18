@@ -216,8 +216,8 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            Intent i=new Intent(MainPage.this,StudentInfomationActivity.class);
-                            i.putExtra("studentID",position);
+                            Intent i = new Intent(MainPage.this, StudentInfomationActivity.class);
+                            i.putExtra("studentID", position);
                             startActivity(i);
                         }
                     }.start();
@@ -253,36 +253,12 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
     private class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
+            outRect.left = 10; // spacing - column * ((1f / spanCount) * spacing)
+            outRect.right = 10; // (column + 1) * ((1f / spanCount) * spacing)
+            outRect.top = 10;
+            outRect.bottom = 10; // item bottom
         }
     }
 
@@ -293,14 +269,15 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (logininfo.MainBackground != null) {
+            ImageView i = (ImageView) findViewById(R.id.HomePageBackGround);
+            i.setImageBitmap(logininfo.MainBackground);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //如果需要透明导航栏，请加入标记
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
-
-        //Snackbar.make(, "我就是提示.....", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -314,12 +291,9 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         logininfo.Dialog.setMessage("初始化页面数据中...");
         logininfo.Dialog.setCancelable(false);
 
-        toolbar.setTitle("首页/学院公告");
+        toolbar.setTitle("学院公告");
         SwitchViewHandler.sendMessage(BundleMessage(1));
-
-
     }
-
 
     @Override
     public void onBackPressed() {
@@ -373,7 +347,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.mMainPage_Main) {
-            toolbar.setTitle("首页/学院公告");
+            toolbar.setTitle("学院公告");
             SwitchViewHandler.sendMessage(BundleMessage(1));
         } else if (id == R.id.nav_gallery) {
             toolbar.setTitle("学生请假");
@@ -460,8 +434,8 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                                 mAllClassAdapter mallclass = new mAllClassAdapter();
                                 RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.m_RecyclerView_mAllClassmate);
                                 mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));//这里用线性显示 类似于listview
-                                mRecyclerView.setHasFixedSize(true);
-                                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 10, true));
+                                mRecyclerView.setHasFixedSize(false);
+                                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration());
                                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                                 mRecyclerView.setAdapter(mallclass);
                             }
@@ -488,7 +462,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                                                     try {
                                                         logininfo.studentInfo = logininfo.aolanClassMate.getThisClassStudent(className[0], s[1], count);
                                                     } catch (IOException e) {
-                                                        Log.d(TAG, "发现异常:来自MainActivity第470行: " + e.getMessage());
+                                                        Log.d(TAG, "发现异常:来自MainActivity第464行: " + e.getMessage());
                                                     }
                                                 }
                                                 classMate.sendEmptyMessage(0);
@@ -748,7 +722,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 } else {
                     finish();
 
-                    /**
+                    /*
                      * todo:下面服务启动不需要,关闭BUG功能
                      */
                     //启动后台服务

@@ -347,4 +347,10 @@ public class HttpUtils {
         }
         return bitmap;
     }
+
+    public static Bitmap getBingImage() throws IOException {
+       String s= Get("http://guolin.tech/api/bing_pic");
+      return   getImageBitmap(s);
+    }
+
 }

@@ -2,6 +2,7 @@ package MuYuanTeacher;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class logininfo {
     public static SharedPreferences Share;
     public static SharedPreferences.Editor edit;
     public static ProgressDialog Dialog = null;
+
+    public static Bitmap MainBackground=null;
 
     public static int LoginState = 0;
     public static String _viewstate;
