@@ -17,4 +17,7 @@ public class studentInfoClass {
     public String studentMoneyCardId;//学生银行卡号
     public Bitmap me=null;
     public String Student_rxsj="";//入学时间
+    public String Student_xdm="";//系代码
+    public String student_xdm_RealName="";//系名称
+    public String Student_bjhm_Str="";//班级号码
 }

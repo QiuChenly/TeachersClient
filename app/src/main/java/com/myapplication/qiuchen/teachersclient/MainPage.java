@@ -54,6 +54,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
     Toolbar toolbar = null;
 
     private static final String TAG = "首页";
+
     /*
      * 新闻数据抓取适配类
      */
@@ -154,7 +155,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();//得到item的LayoutParams布局参数
             params.height = logininfo.getRandom();//把随机的高度赋予itemView布局
             holder.itemView.setLayoutParams(params);//把params设置给itemView布局
-           final studentInfoClass stu =logininfo.studentInfo.get(position);
+            final studentInfoClass stu = logininfo.studentInfo.get(position);
             holder.m_TextView_mAllClassMate_studentId.setText(stu.studentId);
             holder.m_TextView_mAllClassMate_studentMobileNum.setText(stu.studentMobileNumber);
             holder.m_TextView_mAllClassMate_studentName.setText(stu.studentName);
@@ -169,15 +170,22 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             new Thread() {
                 @Override
                 public void run() {
-                    int a = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate)).getSelectedItemPosition();
-                    int b = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS)).getSelectedItemPosition();
-                    String[] str = logininfo.classMate_CLASS.get(b).split("\\(");
+                    if (Objects.equals(stu.student_xdm_RealName, "") || Objects.equals(stu.Student_bjhm_Str, "")) {
+                        int a = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate)).getSelectedItemPosition();
+                        int b = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS)).getSelectedItemPosition();
+                        String[] str = logininfo.classMate_CLASS.get(b).split("\\(");
+                        stu.student_xdm_RealName = logininfo.classMate.get(a).split("\\(")[0];
+                        stu.Student_bjhm_Str = str[0];
+                        stu.Student_xdm = str[1].split("\\|")[1];
+                    }
+
                     /*
                      * 考虑性能,降低服务器压力,只需要初始化一次
                      */
                     if (Objects.equals(stu.Student_rxsj, "")) {
+
                         try {
-                            stu.Student_rxsj = logininfo.aolanClassMate.getThisStudentRxsj(logininfo.classMate.get(a).split("\\(")[0], str[0], str[1].split("\\|")[1], holder.m_TextView_mAllClassMate_studentId.getText().toString());
+                            stu.Student_rxsj = logininfo.aolanClassMate.getThisStudentRxsj(stu.student_xdm_RealName, stu.Student_bjhm_Str, stu.Student_xdm, stu.studentId);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -188,7 +196,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                      */
                     if (stu.me == null) {
                         stu.me = logininfo.aolanClassMate.getThisStudentCardIDPic((logininfo.studentInfo.get(position)).Student_rxsj, stu.studentCardId);
-                        logininfo.studentInfo.set(position,stu);
+                        logininfo.studentInfo.set(position, stu);
                     }
                     Bundle s = new Bundle();
                     s.putParcelable("image", stu.me);
@@ -201,6 +209,19 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(MainPage.this, "提示!!!", Toast.LENGTH_SHORT).show();
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                logininfo.aolanClassMate.getThisStudentMoreInfomation(stu.Student_xdm, stu.Student_bjhm_Str, stu.studentId, stu.studentName);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Intent i=new Intent(MainPage.this,StudentInfomationActivity.class);
+                            i.putExtra("studentID",position);
+                            startActivity(i);
+                        }
+                    }.start();
                 }
             });
         }
@@ -279,7 +300,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
 
-         //Snackbar.make(, "我就是提示.....", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        //Snackbar.make(, "我就是提示.....", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -461,17 +482,17 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                                             public void run() {
 
                                                 //优化加载机制,实现只加载一次数据
-                                                    if (logininfo.studentInfo==null || logininfo.studentInfo.size()<=0) {
-                                                        String[] s = logininfo.classMate_CLASS.get(position).split("\\|");
-                                                        String count = logininfo.aolan.GetSubText(s[0], "(", ")", 0);
-                                                        String[] className = s[0].split("\\(");
-                                                        try {
+                                                if (logininfo.studentInfo == null || logininfo.studentInfo.size() <= 0) {
+                                                    String[] s = logininfo.classMate_CLASS.get(position).split("\\|");
+                                                    String count = logininfo.aolan.GetSubText(s[0], "(", ")", 0);
+                                                    String[] className = s[0].split("\\(");
+                                                    try {
                                                         logininfo.studentInfo = logininfo.aolanClassMate.getThisClassStudent(className[0], s[1], count);
-                                                        } catch (IOException e) {
-                                                            Log.d(TAG, "发现异常:来自MainActivity第470行: "+e.getMessage());
-                                                        }
+                                                    } catch (IOException e) {
+                                                        Log.d(TAG, "发现异常:来自MainActivity第470行: " + e.getMessage());
                                                     }
-                                                    classMate.sendEmptyMessage(0);
+                                                }
+                                                classMate.sendEmptyMessage(0);
                                             }
                                         }.start();
                                     }

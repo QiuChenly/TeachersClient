@@ -159,8 +159,8 @@ public class aolanSystemClassMate extends aolanTeacherSystem {
 
         String data = "__EVENTTARGET=" +
                 "&__EVENTARGUMENT=" +
-                "&__VIEWSTATE=" +
-                "&__VIEWSTATEGENERATOR=" +
+                "&__VIEWSTATE=" +EncodeStr(logininfo._viewstate)+
+                "&__VIEWSTATEGENERATOR=" +logininfo._viewStategenerator+
                 "&xb=&xbdm=&x2_xbdm=&zy=&zydm=&x2_zydm=&sfzhm=&x2_sfzhm=&cell=&x2_cell=&yhzh=&x2_yhzh=&sshm=&x2_sshm=&cwh=&x2_cwh=&qq=&x2_qq=&email=&x2_email=&mz=&mzdm=&x2_mzdm=&csrq=&x2_csrq=&zzmm=&zzmmdm=&x2_zzmmdm=&zzmmsj=&x2_zzmmsj=&xl=&xldm=&x2_xldm=&rxsj=&x2_rxsj=&syszd=&syszddm=&x2_syszddm=&xz=&x2_xz=&xxsj=&x2_xxsj=&jtdz=&x2_jtdz=&jtdh=&x2_jtdh=&jtlxr=&x2_jtlxr=&jtyzbm=&x2_jtyzbm=&xmpy=&x2_xmpy=&ksh=&x2_ksh=&byzx=&x2_byzx=&zxyzbm=&x2_zxyzbm=&cym=&x2_cym=&jg=&x2_jg=&sbkh=&x2_sbkh=&hkxz=&hkxzdm=&x2_hkxzdm=&ptbz=&x2_ptbz=&ck_xsqr=&x2_xsqr=&km=sy_jbgr&pzd=xbdm%2Czydm%2Csfzhm%2Ccell%2Cyhzh%2Csshm%2Ccwh%2Cqq%2Cemail%2Cmzdm%2Ccsrq%2Czzmmdm%2Czzmmsj%2Cxldm%2Crxsj%2Csyszddm%2Cxz%2Cxxsj%2Cjtdz%2Cjtdh%2Cjtlxr%2Cjtyzbm%2Cxmpy%2Cksh%2Cbyzx%2Czxyzbm%2Ccym%2Cjg%2Csbkh%2Chkxzdm%2Cptbz%2Cxsqr&pzd_c=xsqr%2C&pzd_lock=xh%2Cxm%2Cxbdm%2Czydm%2Crxsj%2Cksh%2Csfzhm%2Ccsrq%2Csshm%2C&pzd_lock2=" +
                 "&xdm=" + xdm +
                 "&bjhm=" + EncodeStr(bjhm) +
@@ -168,7 +168,10 @@ public class aolanSystemClassMate extends aolanTeacherSystem {
                 "&xm=" + EncodeStr(xm) +
                 "&qx_i=0&qx_u=1&qx_d=0&databcxs=&databcdel=&xzbz=1&pkey=&pkey4=&xs_bj=&bdbz=&cw=&fjmf=&sb=&pzd_xg=&stuop=1&mc=&tkey=&tkey4=&zjdy=&pczsj=&xp_pmc=&xp_pval=&xp_plx=&xp_pkm=&xp_pzd=&xp_pjxjdm=&xp_ipbz=&xp_pjxjdm2=";
         ResponseData res = HttpUtils.POST(new URL(url), data, HttpUtils.Cookie, "application/x-www-form-urlencoded");
-        return GetSubText(res.ResponseText, "name=\"rxsj\" type=\"hidden\" id=\"rxsj\" value=\"", "\"", 0);
+        
+
+
+        return "";
     }
 
 }
