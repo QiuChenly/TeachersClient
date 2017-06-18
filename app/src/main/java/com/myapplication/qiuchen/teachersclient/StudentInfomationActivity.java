@@ -3,6 +3,7 @@ package com.myapplication.qiuchen.teachersclient;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 
 import MuYuanTeacher.logininfo;
 import MuYuanTeacher.studentInfoClass;
@@ -24,22 +26,32 @@ public class StudentInfomationActivity extends AppCompatActivity {
         int position = i.getExtras().getInt("studentID");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         stu= logininfo.studentInfo.get(position);
-        toolbar.setTitle(stu.studentName);
+
+        //先设置标题,随后让系统处理显示
+        //若在setSupportActionBar()   后面定义则无效显示
+        toolbar.setTitle(stu.Student_bjhm_Str+" "+stu.studentName);
         setSupportActionBar(toolbar);
 
-        Drawable d=new BitmapDrawable(stu.me);
+        //设置学生图片
+        ImageView mStudentImage=(ImageView)findViewById(R.id.mStudentImage);
+        mStudentImage.setImageBitmap(stu.me);
 
-        findViewById(R.id.app_bar).setBackground(d);
-
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //拨打电话快捷方式
+        FloatingActionButton mCallStudent = (FloatingActionButton) findViewById(R.id.mCallStudent);
+        mCallStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse("tel:"+stu.studentMobileNumber));
-               startActivity(i);
+                startActivity(i);
+            }
+        });
+        FloatingActionButton mSendMessageStudent=(FloatingActionButton)findViewById(R.id.mSendMessageStudent);
+        mSendMessageStudent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:+86"+stu.studentMobileNumber));
+                startActivity(intent);
             }
         });
     }

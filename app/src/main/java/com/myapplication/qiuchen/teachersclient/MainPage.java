@@ -208,7 +208,6 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(MainPage.this, "提示!!!", Toast.LENGTH_SHORT).show();
                     new Thread() {
                         @Override
                         public void run() {
