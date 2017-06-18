@@ -39,24 +39,22 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_student_infomation" />
-
-    <LinearLayout
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/mCallStudent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/mSendMessageStudent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_send" />
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/mCallStudent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        app:layout_anchorGravity="bottom|center_horizontal"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/app_bar"
+        app:srcCompat="@android:drawable/ic_menu_call" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/mSendMessageStudent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/app_bar"
+        app:srcCompat="@android:drawable/ic_menu_send"
+        tools:ignore="RtlHardcoded" />
 
-            app:srcCompat="@android:drawable/ic_menu_call" />
-</LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
