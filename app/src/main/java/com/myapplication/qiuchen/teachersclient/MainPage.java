@@ -1,36 +1,33 @@
 package com.myapplication.qiuchen.teachersclient;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,12 +37,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import MuYuanTeacher.HttpUtils;
 import MuYuanTeacher.aolanTeacherSystem;
@@ -57,6 +53,10 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
     long BackTime = 0;
     Toolbar toolbar = null;
 
+    private static final String TAG = "首页";
+    /*
+     * 新闻数据抓取适配类
+     */
     class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> {
 
         private List<Map<String, String>> item;
@@ -136,13 +136,11 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         }
     }
 
+    /*
+     * 学生信息Recycler适配器
+     */
     class mAllClassAdapter extends RecyclerView.Adapter<mAllClassAdapter.MyViewHolder> {
 
-        private List<studentInfoClass> item;
-
-        public void SetAdapterListData(List<studentInfoClass> list) {
-            item = list;
-        }
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -152,11 +150,11 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
 
         @Override
-        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        public void onBindViewHolder(final MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
             ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();//得到item的LayoutParams布局参数
             params.height = logininfo.getRandom();//把随机的高度赋予itemView布局
             holder.itemView.setLayoutParams(params);//把params设置给itemView布局
-            final studentInfoClass stu = item.get(position);
+           final studentInfoClass stu =logininfo.studentInfo.get(position);
             holder.m_TextView_mAllClassMate_studentId.setText(stu.studentId);
             holder.m_TextView_mAllClassMate_studentMobileNum.setText(stu.studentMobileNumber);
             holder.m_TextView_mAllClassMate_studentName.setText(stu.studentName);
@@ -165,19 +163,6 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 @Override
                 public void handleMessage(Message msg) {
                     Bitmap b = msg.getData().getParcelable("image");
-//                    BitmapDrawable drawable = new BitmapDrawable(b);
-//                    float imageWidth = b.getWidth();
-//                    float imageHeight = b.getHeight();
-//                    float ViewWidth = holder.m_LinearLayout_mAllClassMateView.getWidth();
-//                    float ViewHeight = holder.m_LinearLayout_mAllClassMateView.getHeight();
-
-//                    源像素
-//                    567|390
-//                    实际大小
-//                    543 | 917
-//                    543 | 948
-//                    543 | 1008
-//                    543 | 1004
                     holder.m_LinearLayout_mAllClassMateView.setImageBitmap(b);
                 }
             };
@@ -187,10 +172,10 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                     int a = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate)).getSelectedItemPosition();
                     int b = ((Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS)).getSelectedItemPosition();
                     String[] str = logininfo.classMate_CLASS.get(b).split("\\(");
-                    /**
+                    /*
                      * 考虑性能,降低服务器压力,只需要初始化一次
                      */
-                    if (stu.Student_rxsj == "") {
+                    if (Objects.equals(stu.Student_rxsj, "")) {
                         try {
                             stu.Student_rxsj = logininfo.aolanClassMate.getThisStudentRxsj(logininfo.classMate.get(a).split("\\(")[0], str[0], str[1].split("\\|")[1], holder.m_TextView_mAllClassMate_studentId.getText().toString());
                         } catch (IOException e) {
@@ -198,11 +183,12 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                         }
                     }
 
-                    /**
-                     * 缓存图像以便后面调用,降低服务器压力
+                    /*
+                      缓存图像以便后面调用,降低服务器压力
                      */
                     if (stu.me == null) {
-                        stu.me = logininfo.aolanClassMate.getThisStudentCardIDPic((item.get(position)).Student_rxsj, stu.studentCardId);
+                        stu.me = logininfo.aolanClassMate.getThisStudentCardIDPic((logininfo.studentInfo.get(position)).Student_rxsj, stu.studentCardId);
+                        logininfo.studentInfo.set(position,stu);
                     }
                     Bundle s = new Bundle();
                     s.putParcelable("image", stu.me);
@@ -211,11 +197,17 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                     h.sendMessage(msg);
                 }
             }.start();
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainPage.this, "提示!!!", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override
         public int getItemCount() {
-            return item.size();
+            return logininfo.studentInfo.size();
         }
 
         /**
@@ -228,30 +220,24 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
             TextView m_TextView_mAllClassMate_studentNo;
             ImageView m_LinearLayout_mAllClassMateView;
 
-            public MyViewHolder(View view) {
+            MyViewHolder(View view) {
                 super(view);
                 m_TextView_mAllClassMate_studentNo = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentNo);
                 m_TextView_mAllClassMate_studentName = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentName);
                 m_TextView_mAllClassMate_studentId = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentId);
                 m_TextView_mAllClassMate_studentMobileNum = (TextView) view.findViewById(R.id.m_TextView_mAllClassMate_studentMobileNum);
                 m_LinearLayout_mAllClassMateView = (ImageView) view.findViewById(R.id.m_LinearLayout_mAllClassMateView);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainPage.this, "提示!!!", Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
         }
     }
 
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+    private class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         private int spanCount;
         private int spacing;
         private boolean includeEdge;
 
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+        GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
             this.spanCount = spanCount;
             this.spacing = spacing;
             this.includeEdge = includeEdge;
@@ -325,6 +311,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         ((TextView) findViewById(R.id.m_NickName)).setText(logininfo.mlogininfo.mName);
@@ -362,7 +349,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.mMainPage_Main) {
@@ -396,6 +383,7 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     Handler SwitchViewHandler = new Handler() {
+        @SuppressLint("InflateParams")
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -450,7 +438,6 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                                     logininfo.studentInfo = new ArrayList<studentInfoClass>();
                                 }
                                 mAllClassAdapter mallclass = new mAllClassAdapter();
-                                mallclass.SetAdapterListData(logininfo.studentInfo);
                                 RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.m_RecyclerView_mAllClassmate);
                                 mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));//这里用线性显示 类似于listview
                                 mRecyclerView.setHasFixedSize(true);
@@ -472,15 +459,19 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                                         new Thread() {
                                             @Override
                                             public void run() {
-                                                try {
-                                                    String[] s = logininfo.classMate_CLASS.get(position).split("\\|");
-                                                    String count = logininfo.aolan.GetSubText(s[0], "(", ")", 0);
-                                                    String[] className = s[0].split("\\(");
-                                                    logininfo.studentInfo = logininfo.aolanClassMate.getThisClassStudent(className[0], s[1], count);
+
+                                                //优化加载机制,实现只加载一次数据
+                                                    if (logininfo.studentInfo==null || logininfo.studentInfo.size()<=0) {
+                                                        String[] s = logininfo.classMate_CLASS.get(position).split("\\|");
+                                                        String count = logininfo.aolan.GetSubText(s[0], "(", ")", 0);
+                                                        String[] className = s[0].split("\\(");
+                                                        try {
+                                                        logininfo.studentInfo = logininfo.aolanClassMate.getThisClassStudent(className[0], s[1], count);
+                                                        } catch (IOException e) {
+                                                            Log.d(TAG, "发现异常:来自MainActivity第470行: "+e.getMessage());
+                                                        }
+                                                    }
                                                     classMate.sendEmptyMessage(0);
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
                                             }
                                         }.start();
                                     }

@@ -135,4 +135,40 @@ public class aolanSystemClassMate extends aolanTeacherSystem {
         ResponseData res = HttpUtils.POST(new URL(url), data, HttpUtils.Cookie, "application/x-www-form-urlencoded");
         return GetSubText(res.ResponseText, "name=\"rxsj\" type=\"hidden\" id=\"rxsj\" value=\"", "\"", 0);
     }
+
+    /**
+     * 获取学生详细信息
+     * @param xdm 系代码
+     * @param bjhm 班级名称 15数控技术1
+     * @param xh 个人学号
+     * @param xm 个人姓名
+     * @return 返回查询到的数据
+     * @throws IOException IO抛出异常  一般不会抛异常
+     */
+    public String getThisStudentMoreInfomation(String xdm, String bjhm, String xh, String xm) throws IOException {
+        String url = "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_sy_jbgr.aspx";
+        Map<String, String> m = new HashMap<>();
+        m.put("Connection", "keep-alive");
+        m.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+        m.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        m.put("Referer", "http://xgsl.jsahvc.edu.cn/student/rsbulid/r_3_3_sy_jbgr.aspx");
+        m.put("Accept-Language", "zh-CN,zh;q=0.8");
+        m.put("Cookie", HttpUtils.Cookie);
+        String re = HttpUtils.Get(url, "UTF-8", m);
+        UpdataViewState(re);
+
+        String data = "__EVENTTARGET=" +
+                "&__EVENTARGUMENT=" +
+                "&__VIEWSTATE=" +
+                "&__VIEWSTATEGENERATOR=" +
+                "&xb=&xbdm=&x2_xbdm=&zy=&zydm=&x2_zydm=&sfzhm=&x2_sfzhm=&cell=&x2_cell=&yhzh=&x2_yhzh=&sshm=&x2_sshm=&cwh=&x2_cwh=&qq=&x2_qq=&email=&x2_email=&mz=&mzdm=&x2_mzdm=&csrq=&x2_csrq=&zzmm=&zzmmdm=&x2_zzmmdm=&zzmmsj=&x2_zzmmsj=&xl=&xldm=&x2_xldm=&rxsj=&x2_rxsj=&syszd=&syszddm=&x2_syszddm=&xz=&x2_xz=&xxsj=&x2_xxsj=&jtdz=&x2_jtdz=&jtdh=&x2_jtdh=&jtlxr=&x2_jtlxr=&jtyzbm=&x2_jtyzbm=&xmpy=&x2_xmpy=&ksh=&x2_ksh=&byzx=&x2_byzx=&zxyzbm=&x2_zxyzbm=&cym=&x2_cym=&jg=&x2_jg=&sbkh=&x2_sbkh=&hkxz=&hkxzdm=&x2_hkxzdm=&ptbz=&x2_ptbz=&ck_xsqr=&x2_xsqr=&km=sy_jbgr&pzd=xbdm%2Czydm%2Csfzhm%2Ccell%2Cyhzh%2Csshm%2Ccwh%2Cqq%2Cemail%2Cmzdm%2Ccsrq%2Czzmmdm%2Czzmmsj%2Cxldm%2Crxsj%2Csyszddm%2Cxz%2Cxxsj%2Cjtdz%2Cjtdh%2Cjtlxr%2Cjtyzbm%2Cxmpy%2Cksh%2Cbyzx%2Czxyzbm%2Ccym%2Cjg%2Csbkh%2Chkxzdm%2Cptbz%2Cxsqr&pzd_c=xsqr%2C&pzd_lock=xh%2Cxm%2Cxbdm%2Czydm%2Crxsj%2Cksh%2Csfzhm%2Ccsrq%2Csshm%2C&pzd_lock2=" +
+                "&xdm=" + xdm +
+                "&bjhm=" + EncodeStr(bjhm) +
+                "&xh=" + xh +
+                "&xm=" + EncodeStr(xm) +
+                "&qx_i=0&qx_u=1&qx_d=0&databcxs=&databcdel=&xzbz=1&pkey=&pkey4=&xs_bj=&bdbz=&cw=&fjmf=&sb=&pzd_xg=&stuop=1&mc=&tkey=&tkey4=&zjdy=&pczsj=&xp_pmc=&xp_pval=&xp_plx=&xp_pkm=&xp_pzd=&xp_pjxjdm=&xp_ipbz=&xp_pjxjdm2=";
+        ResponseData res = HttpUtils.POST(new URL(url), data, HttpUtils.Cookie, "application/x-www-form-urlencoded");
+        return GetSubText(res.ResponseText, "name=\"rxsj\" type=\"hidden\" id=\"rxsj\" value=\"", "\"", 0);
+    }
+
 }
