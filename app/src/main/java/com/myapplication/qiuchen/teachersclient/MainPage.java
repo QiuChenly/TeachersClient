@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +38,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mikepenz.itemanimators.AlphaCrossFadeAnimator;
+import com.mikepenz.itemanimators.ScaleUpAnimator;
+import com.mikepenz.itemanimators.SlideInOutLeftAnimator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -218,8 +223,8 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                         @Override
                         public void run() {
                             try {
-                                logininfo.aolanClassMate.getThisStudentMoreInfomation(stu);
-                                logininfo.studentInfo.set(position, stu);
+                                studentInfoClass s = logininfo.aolanClassMate.getThisStudentMoreInfomation(stu);
+                                logininfo.studentInfo.set(position, s);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -362,12 +367,9 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         } else if (id == R.id.nav_gallery) {
             toolbar.setTitle("学生请假");
             SwitchViewHandler.sendMessage(BundleMessage(2));
-        } else if (id == R.id.mMainPage_ChattingRoom) {
-            toolbar.setTitle("公共聊天室(未测试)");
-            SwitchViewHandler.sendMessage(BundleMessage(3));
-        } else if (id == R.id.mAllClassMate) {
+        }  else if (id == R.id.mAllClassMate) {
             toolbar.setTitle("我的班级");
-            SwitchViewHandler.sendMessage(BundleMessage(4));
+            SwitchViewHandler.sendMessage(BundleMessage(3));
         } else if (id == R.id.mMainPage_Author) {
             Toast.makeText(this, "你好,我是秋城落叶,有问题想问我?", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.mMainPage_AuthorEmail) {
@@ -399,17 +401,10 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 case 1:
                     initView1Page(inflater);
                     break;
-                case 3:
-                    i = (LinearLayout) inflater.inflate(R.layout.chattingromms, null).findViewById(R.id.chattingviews);
-                    linearLayout = (LinearLayout) findViewById(R.id.m_ContentView);
-                    linearLayout.removeAllViews();
-                    linearLayout.addView(i);
-                    logininfo.Dialog.cancel();
-                    break;
                 case 2:
                     initView2Page(inflater);
                     break;
-                case 4:
+                case 3:
                     initmClassMateView(inflater);
                     break;
             }
@@ -433,14 +428,14 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 mRecyclerView.setAdapter(mallclass);
                 swipeRefreshLayout.setRefreshing(false);
-                isRefreshData=false;
+                isRefreshData = false;
             }
         };
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mSwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                isRefreshData=true;
+                isRefreshData = true;
                 logininfo.studentInfo = new ArrayList<>();
                 Spinner spin = (Spinner) findViewById(R.id.m_Spinner_AllClassMate_CLASS);
                 final String[] s = logininfo.classMate_CLASS.get(spin.getSelectedItemPosition()).split("\\|");
@@ -566,11 +561,17 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         logininfo.Dialog.cancel();
     }
 
+
+    private Boolean isRefreshNews=false;
+
     public void initView1Page(LayoutInflater inflater) {
         LinearLayout i = (LinearLayout) inflater.inflate(R.layout.index_page, null).findViewById(R.id.index_page_pageview);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.m_ContentView);
         linearLayout.removeAllViews();
         linearLayout.addView(i);
+        final SwipeRefreshLayout news_swipeRefreshLayouts = (SwipeRefreshLayout) findViewById(R.id.mNewsRefresh);
+
+
         final Handler hand = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -582,6 +583,11 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 homeAdapter.SetAdapterListData(logininfo.mlogininfo.News);
                 RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(MainPage.this));//这里用线性显示 类似于listview
+                mRecyclerView.setHasFixedSize(false);
+                if (!isRefreshNews) {
+                    mRecyclerView.addItemDecoration(new GridSpacingItemDecoration());
+                }
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 mRecyclerView.setAdapter(homeAdapter);
 
                 if (logininfo.mlogininfo.News_WorkPaln == null) {
@@ -591,14 +597,23 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                 homeAdapter.SetAdapterListData(logininfo.mlogininfo.News_WorkPaln);
                 mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView_WorkPlan);
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(MainPage.this));//这里用线性显示 类似于listview
+                mRecyclerView.setHasFixedSize(false);
+                if (!isRefreshNews) {
+                    mRecyclerView.addItemDecoration(new GridSpacingItemDecoration());
+                }
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 mRecyclerView.setAdapter(homeAdapter);
 
                 // mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));//这里用线性宫格显示 类似于grid view
                 // mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager (2, OrientationHelper.VERTICAL));//这里用线性宫格显示 类似于瀑布流
                 logininfo.Dialog.cancel();
+                if (isRefreshNews) {
+                    news_swipeRefreshLayouts.setRefreshing(false);
+                    isRefreshNews = false;
+                }
             }
         };
-        new Thread() {
+        final Thread s = new Thread() {
             @Override
             public void run() {
                 try {
@@ -609,7 +624,25 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
                     e.printStackTrace();
                 }
             }
-        }.start();
+        };
+        s.start();
+
+        news_swipeRefreshLayouts.setColorSchemeColors(Color.BLUE);
+        news_swipeRefreshLayouts.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(isRefreshNews){
+                    news_swipeRefreshLayouts.setRefreshing(false);
+                    return;
+                }
+                logininfo.mlogininfo.News = new ArrayList<>();
+                logininfo.mlogininfo.News_WorkPaln = new ArrayList<>();
+                ((RecyclerView) findViewById(R.id.mRecyclerView)).removeAllViews();
+                ((RecyclerView) findViewById(R.id.mRecyclerView_WorkPlan)).removeAllViews();
+                isRefreshNews = true;
+                s.start();
+            }
+        });
 
 
     }

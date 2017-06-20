@@ -15,17 +15,17 @@ public class studentInfoClass {
     public String studentCardId;//学生身份证
     public String studentMobileNumber;//学生联系电话
     public String studentMoneyCardId;//学生银行卡号
-    public Bitmap me=null;
-    public String Student_rxsj="";//入学时间
-    public String Student_xdm="";//系代码
-    public String student_xdm_RealName="";//系名称
-    public String Student_bjhm_Str="";//班级号码
+    public Bitmap me = null;
+    public String Student_rxsj = "";//入学时间
+    public String Student_xdm = "";//系代码
+    public String student_xdm_RealName = "";//系名称
+    public String Student_bjhm_Str = "";//班级号码
 
-    public String Student_ssbh="";//宿舍编号
-    public String Student_cwh="";//床位号
+    public String Student_ssbh = "";//宿舍编号
+    public String Student_cwh = "";//床位号
     public String Student_QQ;//QQ号
     public String Student_Email;//电子邮件
-    public String Student_MZ;//名族
+    public String Student_MZ;//民族
     public String Student_CSRQ;//出生日期
     public String Student_ZZMM;//政治面貌
     public String Student_ZZMMJRSJ;//政治面貌加入时间

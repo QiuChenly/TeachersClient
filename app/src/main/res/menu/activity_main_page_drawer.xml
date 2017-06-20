@@ -4,24 +4,18 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/mMainPage_Main"
-            android:icon="@drawable/ic_menu_camera"
             android:title="主页"/>
         <item
-            android:id="@+id/mMainPage_ChattingRoom"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="公共聊天室(未测试)" />
-        <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="学生请假"/>
+            android:title="请假处理"/>
 
         <item
             android:id="@+id/mAllClassMate"
-            android:title="我的所有班级" />
+            android:title="我的班级" />
 
     </group>
 
-    <item android:title="关于APP">
+    <item android:title="关于这个应用">
         <menu>
             <item
                 android:id="@+id/mMainPage_Author"
@@ -30,7 +24,7 @@
             <item
                 android:id="@+id/mMainPage_AuthorEmail"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Email:963084062@qq.com"/>
+                android:title="BUG提交:963084062@qq.com"/>
         </menu>
     </item>
 
