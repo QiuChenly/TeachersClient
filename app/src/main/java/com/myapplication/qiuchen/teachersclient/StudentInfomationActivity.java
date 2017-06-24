@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import MuYuanTeacher.logininfo;
 import MuYuanTeacher.mAdapterData;
@@ -157,6 +158,9 @@ public class StudentInfomationActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(s);
     }
 
+    /*
+    数据适配器
+     */
     List<mAdapterData> sets() {
         List<mAdapterData> a = new ArrayList<>();
         mAdapterData b;
@@ -205,7 +209,7 @@ public class StudentInfomationActivity extends AppCompatActivity {
                     break;
                 case 10:
                     b.mKey = "政治面貌:";
-                    b.mValue = stu.Student_ZZMM + ((stu.Student_ZZMMJRSJ == "") ? "" : "," + stu.Student_ZZMMJRSJ + "加入.");
+                    b.mValue = stu.Student_ZZMM + ((Objects.equals(stu.Student_ZZMMJRSJ, "")) ? "" : "," + stu.Student_ZZMMJRSJ + "加入.");
                     break;
                 case 11:
                     b.mKey = "入学时间:";
