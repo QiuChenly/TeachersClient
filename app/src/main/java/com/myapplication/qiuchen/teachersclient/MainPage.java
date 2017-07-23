@@ -394,8 +394,6 @@ public class MainPage extends AppCompatActivity implements NavigationView.OnNavi
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             logininfo.Dialog.show();
-            LinearLayout i;
-            LinearLayout linearLayout;
             final LayoutInflater inflater = LayoutInflater.from(MainPage.this);
             switch (msg.getData().getInt("page")) {
                 case 1:
